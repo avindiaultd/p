@@ -203,6 +203,7 @@ document.getElementById("text").innerHTML += '<p>' + text + '</p><div><h6>' + Au
           });
         }
    }); 
+document.body.scrollTop = document.documentElement.scrollTop = 0;
 }
 var myIndex = 0;
 carousel();
@@ -227,8 +228,6 @@ function mc() {
   document.getElementById("av").style.visibility = "hidden";
   document.getElementById("avc").style.visibility = "hidden";
   document.getElementById("av0").style.visibility = "visible";
-
-window.scrollTo(100vw,document.body.scrollHeight);
 }
 </script>
 
