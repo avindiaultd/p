@@ -228,7 +228,7 @@ function mc() {
   document.getElementById("avc").style.visibility = "hidden";
   document.getElementById("av0").style.visibility = "visible";
 
-document.body.scrollTop = 0; document.documentElement.scrollTop = 0;
+window.scrollTo(100,document.body.scrollHeight);
 }
 </script>
 
@@ -279,6 +279,9 @@ margin-right: auto;
   height: 50px;
   padding-top: 10px;
   margin-top: 15px;
+}
+.option h1{
+  width: 100vw;
 }
 .option h1 a{
   text-decoration: none;
