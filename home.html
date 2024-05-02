@@ -177,15 +177,7 @@ db.ref('Web/Post/').once('value', function(snapshot){
    var Title = (val.Title);
    var Date = (val.Date);
    var PostNumber = (childSnapshot.child('Post Number').val());
-   document.getElementById("CL").style.height = '0px';
-document.getElementById("CL").style.width = '0px';
-document.getElementById("CL0").style.height = '0px';
-document.getElementById("CL0").style.width = '0px';
-document.getElementById("CL1").style.height = '0px';
-document.getElementById("CL1").style.width = '0px';
-document.getElementById("CL1").style.border = '0px';
-document.getElementById("CL2").style.height = '0px';
-document.getElementById("CL2").style.width = '0px';
+    
 document.getElementById("AJ9AJWOX0").innerHTML += '<li><a class="card_a" href="' + url + '">' + '<div class="card">' + '<div class="fakeimg">' + '<img  src="' + Poster + '">' + '</div>' +  '<h3>' + Title + '</h3>' + '<h6>' + Date + '</h6>' + '</div>' + '</a></li>';
           });
         }
@@ -203,6 +195,15 @@ document.getElementById("text").innerHTML += '<p>' + text + '</p><div><h6>' + Au
           });
         }
    }); 
+document.getElementById("CL").style.height = '0px';
+document.getElementById("CL").style.width = '0px';
+document.getElementById("CL0").style.height = '0px';
+document.getElementById("CL0").style.width = '0px';
+document.getElementById("CL1").style.height = '0px';
+document.getElementById("CL1").style.width = '0px';
+document.getElementById("CL1").style.border = '0px';
+document.getElementById("CL2").style.height = '0px';
+document.getElementById("CL2").style.width = '0px';
 document.body.scrollTop = document.documentElement.scrollTop = 0;
 }
 var myIndex = 0;
