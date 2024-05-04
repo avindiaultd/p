@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+ 
+  <meta name="theme-color" content="#8505ff">
+  <meta name="msapplication-navbutton-color" content="#8505ff">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#8505ff">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/gzgKGpm/20230824-151647.png">
+  <title>AV INDIA / TV</title>
+</head>
+<body onload="Call_Data()">
+    <header>
+      <h3 style="background-color: red;color: white;">This Service is not available</h3>
+    <img src="https://avindia1.github.io/p/assets/White_Logo_2x.png"><h6>Since 2023 ( © 2024 )</h6> 
+      <div class="option"><h1><a href="./award">Awards</a><a href="./rank">Rank</a><a href="./team">Team</a><a href="./game">Games</a><a href="./book">Books</a><a href="./NEA">NEA</a><a href="./Moza">Moza</a><a href="./help">Help</a><a href="./tv">TV</a></h1></div>
+  </header>
+  
+  <div class="youtube"><div class="title"><h1 id="a">You</h1><h1 id="b">Tube</h1></div>
+  </div>    <div class="ytcon" id="youtube"></div>
+  
+    <div class="Live"><div class="title"><h1 id="a">Live •</h1></div>
+  </div>    <div class="livcon" id="live"></div>
+  
+    <div class="News"><div class="title"><h1 id="a">News</h1></div>
+  </div>    <div class="newscon" id="news"></div>
+  
+    <div class="Entertainment"><div class="title"><h1 id="a">Entertainment</h1></div>
+  </div>    <div class="encon" id="entertainment"></div>
+  
+    <div class="Kids"><div class="title"><h1 id="a">Kids</h1></div>
+  </div>    <div class="kidcon" id="kids"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+  <!-- {CALL_DATA_[M]}(M){CALL_DATA_EXOP0000}{.2929}@2772WUHWWU72U2UW_FIREBASE_REALTIME_DATABASE_(0.1) -->
+
+<script>
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyBjMWFjGpr04xzmQN9y5LlPGLe2NeI5GnY",
+  authDomain: "moza-c42fb.firebaseapp.com",
+  databaseURL: "https://moza-c42fb-default-rtdb.firebaseio.com/",
+  projectId: "moza-c42fb",
+  storageBucket: "moza-c42fb.appspot.com",
+  messagingSenderId: "256429602324"
+};
+firebase.initializeApp(config);
+
+var db = firebase.database();
+
+function Call_Data() {
+db.ref('Web/tv/youtube/').once('value', function(snapshot){
+        if(snapshot.exists()){
+ snapshot.forEach(function(childSnapshot){
+                var val = childSnapshot.val();
+                var key = childSnapshot.key;
+   var Poster = String((val.Poster));
+   var url = String((val.Url));
+   var Title = (val.Title);
+   var Date = (val.Date);
+   var PostNumber = (childSnapshot.child('Post Number').val());
+
+document.getElementById("youtube").innerHTML += '<li><a class="card_a" href="' + url + '">' + '<div class="card">' + '<div class="fakeimg">' + '<img  src="' + Poster + '">' + '</div>' +  '<h3>' + Title + '</h3>' + '</div>' + '</a></li>';
+          });
+        }
+   });
+  
+  db.ref('Web/tv/live/').once('value', function(snapshot){
+        if(snapshot.exists()){
+ snapshot.forEach(function(childSnapshot){
+                var val = childSnapshot.val();
+                var key = childSnapshot.key;
+   var Poster = String((val.Poster));
+   var url = String((val.Url));
+   var Title = (val.Title);
+   var Date = (val.Date);
+   var PostNumber = (childSnapshot.child('Post Number').val());
+
+document.getElementById("live").innerHTML += '<li><a class="card_a" href="' + url + '">' + '<div class="card">' + '<div class="fakeimg">' + '<img  src="' + Poster + '">' + '</div>' +  '<h3>' + Title + '</h3>' + '</div>' + '</a></li>';
+          });
+        }
+   });
+  
+db.ref('Web/tv/news/').once('value', function(snapshot){
+        if(snapshot.exists()){
+ snapshot.forEach(function(childSnapshot){
+                var val = childSnapshot.val();
+                var key = childSnapshot.key;
+   var Poster = String((val.Poster));
+   var url = String((val.Url));
+   var Title = (val.Title);
+   var Date = (val.Date);
+   var PostNumber = (childSnapshot.child('Post Number').val());
+
+document.getElementById("news").innerHTML += '<li><a class="card_a" href="' + url + '">' + '<div class="card">' + '<div class="fakeimg">' + '<img  src="' + Poster + '">' + '</div>' +  '<h3>' + Title + '</h3>' + '</div>' + '</a></li>';
+          });
+        }
+   });  
+  
+  db.ref('Web/tv/entertainment /').once('value', function(snapshot){
+        if(snapshot.exists()){
+ snapshot.forEach(function(childSnapshot){
+                var val = childSnapshot.val();
+                var key = childSnapshot.key;
+   var Poster = String((val.Poster));
+   var url = String((val.Url));
+   var Title = (val.Title);
+   var Date = (val.Date);
+   var PostNumber = (childSnapshot.child('Post Number').val());
+
+document.getElementById("entertainment").innerHTML += '<li><a class="card_a" href="' + url + '">' + '<div class="card">' + '<div class="fakeimg">' + '<img  src="' + Poster + '">' + '</div>' +  '<h3>' + Title + '</h3>' + '</div>' + '</a></li>';
+          });
+        }
+   });
+  
+  db.ref('Web/tv/kids/').once('value', function(snapshot){
+        if(snapshot.exists()){
+ snapshot.forEach(function(childSnapshot){
+                var val = childSnapshot.val();
+                var key = childSnapshot.key;
+   var Poster = String((val.Poster));
+   var url = String((val.Url));
+   var Title = (val.Title);
+   var Date = (val.Date);
+   var PostNumber = (childSnapshot.child('Post Number').val());
+
+document.getElementById("kids").innerHTML += '<li><a class="card_a" href="' + url + '">' + '<div class="card">' + '<div class="fakeimg">' + '<img  src="' + Poster + '">' + '</div>' +  '<h3>' + Title + '</h3>' + '</div>' + '</a></li>';
+          });
+        }
+   });  
+}
+  </script>  
+<style>
+*{margin: 0px;font-family: verdana;}
+header{
+  display: inline-block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #fff;  
+}
+header img{
+  width: 170px;
+  margin-left: 0px ;
+}
+header h6{
+  color: #aaa;
+  margin-left: 70px;
+  font-weight: 300;
+  font-size: 12px;
+  margin-top: -10px;
+}
+header h2{
+  color: #8505ff;
+  margin-left: 200px;
+  font-weight: 500;
+  font-size: 12px;
+    display: inline-block;
+  position: absolute;
+  top: 5;
+  left: 0;
+  background-color: #fff;  
+}
+.option{
+  display: flex;
+  overflow: auto;
+  white-space: nowarp;
+  height: 50px;
+  padding-top: 10px;
+  margin-top: 0px;
+  width: 100vw;
+}
+.option h1 a{
+  text-decoration: none;
+   color: #8505ff;
+  font-size: 12px;
+  margin: 10px;
+  padding-left: 10px;
+  padding-top: 3px;
+  padding-right: 10px;
+  padding-bottom: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  /*transition: 0.5s;*/
+  background-size: 20% auto;
+ /* text-shadow: 0px 0px 10px rgba(0,0,0,0.2);*/
+  box-shadow: 0 10px 20px #ccc;
+  border-radius: 10px;
+}
+.youtube{
+  margin-top: 170px;
+}
+.youtube .title{
+  display: flex;
+  padding: 0px;
+  margin-left: 0px;
+}
+.youtube #a{
+  color: #000000;
+  margin-left: 70px;
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 15px;
+}
+.youtube #b{
+  color: #DE3D31;
+  margin-left: 70px;
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 0px;
+}
+#youtube{
+  display: flex;
+  overflow: auto;
+  white-space: nowarp;
+  padding-top: 10px;
+  margin-top: 0px;
+  width: 100vw;
+}
+#youtube .card h3{
+  margin-left: 1px;
+  margin-top: 5px;
+  width: 300px;
+  margin-bottom: 0px;
+  font-size: 12px;
+  font-weight: 700;
+}
+#youtube .card_a{
+  text-decoration: none;
+  color: #000;  
+}
+#youtube li{
+  list-style: none;
+  /*overflow: hidden;*/
+  margin: 10px;
+}
+#youtube .card .fakeimg img{
+  width: 300px;
+  height: 180px;
+  border: 0px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 0px;
+}
+#youtube a{
+  text-decoration: none;
+  color: #2196F3;
+}
+.Live{
+  margin-top: 10px;
+}
+.Live .title{
+  display: flex;
+  padding: 0px;
+  margin-left: 0px;
+}
+.Live #a{
+  color: #DE3D31;
+  margin-left: 70px;
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 15px;
+}
+#live{
+  display: flex;
+  overflow: auto;
+  white-space: nowarp;
+  padding-top: 10px;
+  margin-top: 0px;
+  width: 100vw;
+}
+#live .card h3{
+  margin-left: 1px;
+  margin-top: 5px;
+  width: 105px;
+  margin-bottom: 0px;
+  font-size: 12px;
+  font-weight: 700;
+}
+#live .card_a{
+  text-decoration: none;
+  color: #000;  
+}
+#live li{
+  list-style: none;
+  /*overflow: hidden;*/
+  margin: 10px;
+}
+#live .card .fakeimg img{
+  width: 100px;
+  height: 100px;
+  border: 0px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 0px;
+}
+#live a{
+  text-decoration: none;
+  color: #2196F3;
+}
+.News{
+  margin-top: 10px;
+}
+.News .title{
+  display: flex;
+  padding: 0px;
+  margin-left: 0px;
+}
+.News #a{
+  color: #2196F3;
+  margin-left: 70px;
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 15px;
+}
+#news{
+  display: flex;
+  overflow: auto;
+  white-space: nowarp;
+  padding-top: 10px;
+  margin-top: 0px;
+  width: 100vw;
+}
+#news .card h3{
+  margin-left: 1px;
+  margin-top: 5px;
+  width: 300px;
+  margin-bottom: 0px;
+  font-size: 12px;
+  font-weight: 700;
+}
+#news .card_a{
+  text-decoration: none;
+  color: #000;  
+}
+#news li{
+  list-style: none;
+  /*overflow: hidden;*/
+  margin: 10px;
+}
+#news .card .fakeimg img{
+  width: 300px;
+  height: 180px;
+  border: 0px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 0px;
+}
+#news a{
+  text-decoration: none;
+  color: #2196F3;
+}
+.Entertainment{
+  margin-top: 10px;
+}
+.Entertainment .title{
+  display: flex;
+  padding: 0px;
+  margin-left: 0px;
+}
+.Entertainment #a{
+  color: #1B5E20;
+  margin-left: 70px;
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 15px;
+}
+#entertainment{
+  display: flex;
+  overflow: auto;
+  white-space: nowarp;
+  padding-top: 10px;
+  margin-top: 0px;
+  width: 100vw;
+}
+#entertainment .card h3{
+  margin-left: 1px;
+  margin-top: 5px;
+  width: 300px;
+  margin-bottom: 0px;
+  font-size: 12px;
+  font-weight: 700;
+}
+#entertainment .card_a{
+  text-decoration: none;
+  color: #000;  
+}
+#entertainment li{
+  list-style: none;
+  /*overflow: hidden;*/
+  margin: 10px;
+}
+#entertainment .card .fakeimg img{
+  width: 300px;
+  height: 180px;
+  border: 0px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 0px;
+}
+#entertainment a{
+  text-decoration: none;
+  color: #2196F3;
+}
+.Kids{
+  margin-top: 10px;
+}
+.Kids .title{
+  display: flex;
+  padding: 0px;
+  margin-left: 0px;
+}
+.Kids #a{
+  color: #FF5722;
+  margin-left: 70px;
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 15px;
+}
+#kids{
+  display: flex;
+  overflow: auto;
+  white-space: nowarp;
+  padding-top: 10px;
+  margin-top: 0px;
+  width: 100vw;
+}
+#kids .card h3{
+  margin-left: 1px;
+  margin-top: 5px;
+  width: 300px;
+  margin-bottom: 0px;
+  font-size: 12px;
+  font-weight: 700;
+}
+#kids .card_a{
+  text-decoration: none;
+  color: #000;  
+}
+#kids li{
+  list-style: none;
+  /*overflow: hidden;*/
+  margin: 10px;
+}
+#kids .card .fakeimg img{
+  width: 300px;
+  height: 180px;
+  border: 0px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 0px;
+}
+#kids a{
+  text-decoration: none;
+  color: #2196F3;
+}
+</style>
+</body>
+</html>
