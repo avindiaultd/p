@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AV Help</title>
+  <link rel="icon" type="image/x-icon" href="https://i.ibb.co/gzgKGpm/20230824-151647.png">
+    <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel="stylesheet">
+      <link href='https://fonts.googleapis.com/css?family=Bungee Outline' rel='stylesheet'/>
+    <link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'/>
+    <!-- Use font awesome icons. -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <!-- Use firebase app and database. -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#8505ff">
+<meta name="msapplication-navbutton-color" content="#8505ff">
+<meta name="apple-mobile-web-app-status-bar-style" content="#8505ff">
+</head>
+<script>
+function bottom() {
+window.scrollTo(0,document.body.scrollHeight);
+}
+function p() {
+document.body.scrollTop = 0; 
+  document.documentElement.scrollTop = 0;
+}
+</script>
+<style>
+*{
+  margin: 0px;
+  font-family: Varela Round;
+}
+nav{
+  background-color: #8505ff;
+  color: #f8f9ff;
+  padding: 10px;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+nav h1{
+  margin-top: 10px;
+  font-family: Varela Round;
+}
+nav button{
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #f8f9ff;
+  color: #8505ff;
+}
+nav .vvvvv{
+  width: 100px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #8505ff;
+  color: #8505ff;
+}
+</style>
+<body>
+  <nav><h1>AV HELP</h1><button class="vvvvv">keyboard_double_arrow_down</button><button class="material-icons md-25" onclick="bottom()">keyboard_double_arrow_down</button><button class="material-icons md-25" onclick="p()">keyboard_double_arrow_up</button></nav>
+</body>
+
+<script>
+// We enclose this in window.onload.
+// So we don't have ridiculous errors.
+window.onload = function() {
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyBjMWFjGpr04xzmQN9y5LlPGLe2NeI5GnY",
+  authDomain: "moza-c42fb.firebaseapp.com",
+  databaseURL: "https://moza-c42fb-default-rtdb.firebaseio.com/",
+  projectId: "moza-c42fb",
+  storageBucket: "moza-c42fb.appspot.com",
+  messagingSenderId: "256429602324"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  // This is very IMPORTANT!! We're going to use "db" a lot.
+  var db = firebase.database()
+  // We're going to use oBjEcT OrIeNtEd PrOgRaMmInG. Lol
+  class MEME_CHAT{
+    // Home() is used to create the home page
+    home(){
+      // First clear the body before adding in
+      // a title and the join form
+      document.body.innerHTML = ''
+      this.create_title()
+      this.create_join_form()
+    }
+    // chat() is used to create the chat page
+    chat(){
+      this.create_title()
+      this.create_chat()
+    }
+    // create_title() is used to create the title
+    create_title(){
+      // This is the title creator. 🎉
+      var title_container = document.createElement('div')
+      title_container.setAttribute('id', 'title_container')
+      var title_inner_container = document.createElement('div')
+      title_inner_container.setAttribute('id', 'title_inner_container')
+
+      var title = document.createElement('h1')
+      title.setAttribute('id', 'title')
+      title.textContent = ''
+
+      title_inner_container.append(title)
+      title_container.append(title_inner_container)
+      document.body.append(title_container)
+    }
+    // create_join_form() creates the join form
+    create_join_form(){
+      // YOU MUST HAVE (PARENT = THIS). OR NOT. IM NOT YOUR BOSS!😂
+      var parent = this;
+
+      var join_container = document.createElement('div')
+      join_container.setAttribute('id', 'join_container')
+      var join_inner_container = document.createElement('div')
+      join_inner_container.setAttribute('id', 'join_inner_container')
+
+      var join_button_container = document.createElement('div')
+      join_button_container.setAttribute('id', 'join_button_container')
+
+      var join_button = document.createElement('button')
+      join_button.setAttribute('id', 'join_button')
+      join_button.innerHTML = 'Join <i class="fas fa-sign-in-alt"></i>'
+
+      var join_input_container = document.createElement('div')
+      join_input_container.setAttribute('id', 'join_input_container')
+
+      var join_input = document.createElement('input')
+      join_input.setAttribute('id', 'join_input')
+      join_input.setAttribute('maxlength', 30)
+      join_input.placeholder = 'Enter your name...'
+      // Every time we type into the join_input
+      join_input.onkeyup  = function(){
+        // If the input we have is longer that 0 letters
+        if(join_input.value.length > 0){
+          // Make the button light up
+          join_button.classList.add('enabled')
+          // Allow the user to click the button
+          join_button.onclick = function(){
+            // Save the name to local storage. Passing in
+            // the join_input.value
+            parent.save_name(join_input.value)
+            // Remove the join_container. So the site doesnlook weird.
+            join_container.remove()
+            // parent = this. But it is not the join_button
+            // It is (MEME_CHAT = this).
+            parent.create_chat()
+            location.reload();
+          }
+        }else{
+          // If the join_input is empty then turn off the
+          // join button
+          join_button.classList.remove('enabled')
+        }
+      }
+
+      // Append everything to the body
+      join_button_container.append(join_button)
+      join_input_container.append(join_input)
+      join_inner_container.append(join_input_container, join_button_container)
+      join_container.append(join_inner_container)
+      document.body.append(join_container)
+    }
+    // create_load() creates a loading circle that is used in the chat container
+    create_load(container_id){
+      // YOU ALSO MUST HAVE (PARENT = THIS). BUT ITS WHATEVER THO.
+      var parent = this;
+
+      // This is a loading function. Something cool to have.
+      var container = document.getElementById(container_id)
+      container.innerHTML = ''
+
+      var loader_container = document.createElement('div')
+      loader_container.setAttribute('class', 'loader_container')
+
+      var loader = document.createElement('div')
+      loader.setAttribute('class', 'loader')
+
+      loader_container.append(loader)
+      container.append(loader_container)
+
+    }
+    // create_chat() creates the chat container and stuff
+    create_chat(){
+      // Again! You need to have (parent = this)
+      var parent = this;
+      // GET THAT MEMECHAT HEADER OUTTA HERE
+      var title_container = document.getElementById('title_container')
+      var title = document.getElementById('title')
+      title_container.classList.add('chat_title_container')
+      // Make the title smaller by making it 'chat_title'
+      title.classList.add('chat_title')
+
+      var chat_container = document.createElement('div')
+      chat_container.setAttribute('id', 'chat_container')
+
+      var chat_inner_container = document.createElement('div')
+      chat_inner_container.setAttribute('id', 'chat_inner_container')
+
+      var chat_content_container = document.createElement('div')
+      chat_content_container.setAttribute('id', 'chat_content_container')
+
+      var chat_input_container = document.createElement('div')
+      chat_input_container.setAttribute('id', 'chat_input_container')
+
+      var chat_input_send = document.createElement('button')
+      chat_input_send.setAttribute('id', 'chat_input_send')
+      chat_input_send.setAttribute('disabled', true)
+      chat_input_send.innerHTML = `<i class="material-icons md-25">send</i>`
+
+      var chat_input = document.createElement('input')
+      chat_input.setAttribute('id', 'chat_input')
+      // Only a max message length of 1000
+      chat_input.setAttribute('maxlength', 1000)
+      // Get the name of the user
+      chat_input.placeholder = `${parent.get_name()}. Say something...`
+      chat_input.onkeyup  = function(){
+        if(chat_input.value.length > 0){
+          chat_input_send.removeAttribute('disabled')
+          chat_input_send.classList.add('enabled')
+          chat_input_send.onclick = function(){
+            chat_input_send.setAttribute('disabled', true)
+            chat_input_send.classList.remove('enabled')
+            if(chat_input.value.length <= 0){
+              return
+            }
+            // Enable the loading circle in the 'chat_content_container'
+            parent.create_load('chat_content_container')
+            // Send the message. Pass in the chat_input.value
+            parent.send_message(chat_input.value)
+            // Clear the chat input box
+            chat_input.value = ''
+            // Focus on the input just after
+            chat_input.focus()
+          }
+        }else{
+          chat_input_send.classList.remove('enabled')
+        }
+      }
+
+      var chat_logout_container = document.createElement('div')
+      chat_logout_container.setAttribute('id', 'chat_logout_container')
+
+      var chat_logout = document.createElement('button')
+      chat_logout.setAttribute('id', 'chat_logout')
+      chat_logout.textContent = `${parent.get_name()} • logout`
+      // "Logout" is really just deleting the name from the localStorage
+      chat_logout.onclick = function(){
+        localStorage.clear()
+        // Go back to home page
+        parent.home()
+      }
+
+      chat_logout_container.append(chat_logout)
+      chat_input_container.append(chat_input, chat_input_send)
+      chat_inner_container.append(chat_content_container, chat_input_container, chat_logout_container)
+      chat_container.append(chat_inner_container)
+      document.body.append(chat_container)
+      // After creating the chat. We immediatly create a loading circle in the 'chat_content_container'
+      parent.create_load('chat_content_container')
+      // then we "refresh" and get the chat data from Firebase
+      parent.refresh_chat()
+    }
+    // Save name. It literally saves the name to localStorage
+    save_name(name){
+      // Save name to localStorage
+      localStorage.setItem('name', name)
+    }
+    // Sends message/saves the message to firebase database
+    send_message(message){
+      var parent = this
+      // if the local storage name is null and there is no message
+      // then return/don't send the message. The user is somehow hacking
+      // to send messages. Or they just deleted the
+      // localstorage themselves. But hacking sounds cooler!!
+      if(parent.get_name() == null && message == null){
+        return
+      }
+
+      // Get the firebase database value
+      db.ref('chats/').once('value', function(message_object) {
+        // This index is mortant. It will help organize the chat in order
+        var index = parseFloat(message_object.numChildren()) + 1
+        db.ref('chats/' + `message_${index}`).set({
+          name: parent.get_name(),
+          message: message,
+          index: index
+        })
+        .then(function(){
+          // After we send the chat refresh to get the new messages
+          parent.refresh_chat()
+        })
+      })
+    }
+    // Get name. Gets the username from localStorage
+    get_name(){
+      // Get the name from localstorage
+      if(localStorage.getItem('name') != null){
+        return localStorage.getItem('name')
+      }else{
+        this.home()
+        return null
+      }
+    }
+    // Refresh chat gets the message/chat data from firebase
+    refresh_chat(){
+      var chat_content_container = document.getElementById('chat_content_container')
+
+      // Get the chats from firebase
+      db.ref('chats/').on('value', function(messages_object) {
+        // When we get the data clear chat_content_container
+        chat_content_container.innerHTML = ''
+        // if there are no messages in the chat. Retrun . Don't load anything
+        if(messages_object.numChildren() == 0){
+          return
+        }
+
+        // OK! SO IF YOU'RE A ROOKIE CODER. THIS IS GOING TO BE
+        // SUPER EASY-ISH! I THINK. MAYBE NOT. WE'LL SEE!
+
+        // convert the message object values to an array.
+        var messages = Object.values(messages_object.val());
+        var guide = [] // this will be our guide to organizing the messages
+        var unordered = [] // unordered messages
+        var ordered = [] // we're going to order these messages
+
+        for (var i, i = 0; i < messages.length; i++) {
+          // The guide is simply an array from 0 to the messages.length
+          guide.push(i+1)
+          // unordered is the [message, index_of_the_message]
+          unordered.push([messages[i], messages[i].index]);
+        }
+
+        // Now this is straight up from stack overflow 🤣
+        // Sort the unordered messages by the guide
+        guide.forEach(function(key) {
+          var found = false
+          unordered = unordered.filter(function(item) {
+            if(!found && item[1] == key) {
+              // Now push the ordered messages to ordered array
+              ordered.push(item[0])
+              found = true
+              return false
+            }else{
+              return true
+            }
+          })
+        })
+
+        // Now we're done. Simply display the ordered messages
+        ordered.forEach(function(data) {
+          var name = data.name
+          var message = data.message
+
+          var message_container = document.createElement('div')
+          message_container.setAttribute('class', 'message_container')
+
+          var message_inner_container = document.createElement('div')
+          message_inner_container.setAttribute('class', 'message_inner_container')
+
+          var message_user_container = document.createElement('div')
+          message_user_container.setAttribute('class', 'message_user_container')
+
+          var message_user = document.createElement('p')
+          message_user.setAttribute('class', 'message_user')
+          message_user.textContent = `${name}`
+
+          var message_content_container = document.createElement('div')
+          message_content_container.setAttribute('class', 'message_content_container')
+
+          var message_content = document.createElement('p')
+          message_content.setAttribute('class', 'message_content')
+          message_content.textContent = `${message}`
+
+          message_user_container.append(message_user)
+          message_content_container.append(message_content)
+          message_inner_container.append(message_user_container, message_content_container)
+          message_container.append(message_inner_container)
+
+          chat_content_container.append(message_container)
+        });
+        // Go to the recent message at the bottom of the container
+        chat_content_container.scrollTop = chat_content_container.scrollHeight;
+    })
+
+    }
+  }
+  // So we've "built" our app. Let's make it work!!
+  var app = new MEME_CHAT()
+  // If we have a name stored in localStorage.
+  // Then use that name. Otherwise , if not.
+  // Go to home.
+  if(app.get_name() != null){
+    app.chat()
+  }
+}
+    </script>
+    <style>
+/index.css
+body{
+  /* https://www.color-hex.com/color/d3d3d3 */
+  background-color: #fff; /*#f6f6f6, EBEBD3, fafafa*/
+  font-family: Bungee Outline;
+  font-weight: 900;
+
+  overflow: hidden;
+  animation: blur 0.5s ease-out;
+
+}
+*{
+  outline: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+#title_container{
+  width: 100%;
+  height: 225px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #D64045;/*#467599;*/
+  border-bottom: 5px solid #fff;
+  box-shadow: 0 0 30px -18px #D64045;
+
+}
+#title_inner_container{
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* background-color: #083D77; */
+  border-radius: 200px;
+}
+#title{
+  display: inline-block;
+  color: #fff;/*EBEBD3, C5283D*/
+  font-size: 55px;
+  letter-spacing: 2px;
+  user-select: none;
+}
+
+#join_container{
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: left;
+  margin-top: 800px;
+
+}
+#join_inner_container{
+  width: 100%;
+  height: 100%;
+}
+#join_input_container{
+  width: 100%;
+  height: 50px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  float: left;
+}
+#join_input{
+  width: 85%;
+  height: 50px;
+  border-radius: 25px;
+  float: left;
+  background-color: #f8f9ff;
+  color: #1D3354;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 15px;
+}
+#join_input:focus{
+  box-shadow: 0 10px 30px -17px #1D3354;
+}
+#join_button_container{
+  width: 100%;
+  height: 50px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  float: left;
+}
+#join_button{
+  width: 120px;
+  height: 40px;
+
+  font-family: Varela Round;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+}
+
+#chat_container{
+  width: 100%;
+  height: 90%;
+
+  display: flex;
+  justify-content: center;
+
+  float: left;
+  margin-top: 40px;
+  /* Fade in container */
+  animation: fadeIn 1s linear;
+
+}
+#chat_inner_container{
+  width: 100%;
+  height: 100%;
+}
+#chat_content_container{
+  margin-top: 40px;
+  width: 100%;
+  height: 90%;
+
+  float: left;
+  overflow-y: auto;
+  font-family: Varela Round;
+
+  padding-left: 15px;
+  padding-right: 15px;
+}
+#chat_input_container{
+  width: 100%;
+  height: 10%;
+
+  float: left;
+  border-bottom: 0px dashed #1D3354;
+  background-color: Transparent;
+
+  padding-left: 15px;
+  padding-right: 15px;
+  font-family: Varela Round;
+  margin-top: 10px;
+}
+#chat_input{
+  width: 85%;
+  height: 50px;
+  border-radius: 25px;
+  float: left;
+  background-color: #f8f9ff;
+  color: #1D3354;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 15px;
+}
+#chat_input_send{
+  width: 50px;
+  height: 50px;
+  float: right;
+  margin-top: 0px;
+  margin-right: -10px;
+  border-radius: 25px;
+  font-size: 18px;
+  background-color: #8505ff;
+  text-align: center;
+  color: #f8f9ff;
+}
+#chat_input_send.enabled{
+  color: #f8f9ff;
+  background-color: #8505ff;
+  cursor: pointer;
+
+}
+#chat_logout_container{
+  
+}
+#chat_logout{
+  width: 90%;
+  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: left;
+  margin-top: 20px;
+  margin-left: 20px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #D64045;
+  color: #fff;
+  cursor: pointer;
+  background-color: #D64045;
+  margin-bottom: 10px
+}
+#chat_logout{
+  text-decoration: none;
+}
+.message_container{
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 20px;
+
+}
+.message_inner_container{
+  width: 100%;
+  display: inline-block;
+
+  color: #1D3354;
+}
+.message_user_container{
+  width: 100%;
+  display: inline-block;
+}
+.message_user{
+  font-weight: bold;
+  font-size: 14px;
+}
+.message_content_container{
+  width: 100%;
+  display: inline-block;
+
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.message_content{
+  font-weight: normal;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.enabled{
+  transition: background-color 0.5s;
+  color: #fff;
+  background-color: #D64045; /*#5B7553;*/
+  cursor: pointer;
+}
+#title_container.chat_title_container{
+  transition: 0.8s;
+  transition-timing-function: ease-in-out;
+  height: 0px;
+}
+#title.chat_title{
+  transition: 0.8s;
+  font-size: 0px;
+}
+.loader_container{
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loader {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+
+  border-top: 6px solid #8505ff;
+  border-bottom: 6px solid #8505ff;
+  border-left: 6px solid #f8f9ff;
+  border-right: 6px solid #f8f9ff;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes fadeIn {
+   0% {opacity: 0;}
+   100% {opacity: 1;}
+}
+@keyframes blur {
+  0% {filter: blur(5px);}
+  100% {}
+}
+::selection {
+  background-color: #8505ff;
+  color: #fff;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  background: #cccs;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #8505ff;
+  border-radius: 5px;
+}    
+</style>
+</html>
