@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>AV INDIA / TV</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,6 +12,7 @@
   <meta name="theme-color" content="#000">
 <meta name="msapplication-navbutton-color" content="#000">
 <meta name="apple-mobile-web-app-status-bar-style" content="#000">
+
 </head>
 <style>
 html{
@@ -400,8 +401,7 @@ ehehwcqkseqyka646or27wr6t7ps1uywrt1q7fuad1prw6t725926t725p1tupsd6oarueqptwirw7iy
 -->
     <div class="container" id="full" onclick="aaa()">
       <div class="WM"><!--<label>AV INDIA ULTD</label>--><img src="https://avindia1.github.io/p/assets/White_Logo_2x.png"></div>
-      <video src="https://pubads.g.doubleclick.net/ssai/event/Qyqz40bSQriqSuAC7R8_Fw/master.m3u8" poster="https://avindiaultd.github.io/p/assets/PLoadx1.jpg" id="video">
-</video>
+
         <div class="controls" id="abc">
           <!--<button onclick="rewind(event)"><i class="material-icons md-25">arrow_back_ios</i></button>-->
                       <button onclick="play(event)"><i class="fa fa-play"></i><i class="fa fa-pause"></i></button>
@@ -435,6 +435,9 @@ ehehwcqkseqyka646or27wr6t7ps1uywrt1q7fuad1prw6t725926t725p1tupsd6oarueqptwirw7iy
   <!-- <div class="Akeb" style="margin-top: 15px;width: 100%;text-align: center;height: 60px;background-color: #f8f9ff;border-radius: 20px;padding-top: 5px;"> <a href="./MozaDownload"> <p style="margin-top: 15px;margin-left: 5px;font-family: 'Barlow Condensed', sans-serif; color: #8505ff;"> * To Enjoy this with more feature Download The App Now!</p></a>
   </div>-->
 <centre><div class="liveall" id="liveall"></div></centre>
+<video preload="none" id="player" autoplay controls crossorigin><source src="https://pubads.g.doubleclick.net/ssai/event/Qyqz40bSQriqSuAC7R8_Fw/master.m3u8" type="application/x-mpegURL"> <track src="VID.vtt" kind="subtitles" srclang="en" label="English"></video>
+<script src="https://cdn.plyr.io/3.5.10/plyr.js"></script>        <link rel="stylesheet" href="https://cdn.plyr.io/3.5.10/plyr.css" />
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
@@ -458,7 +461,6 @@ ehehwcqkseqyka646or27wr6t7ps1uywrt1q7fuad1prw6t725926t725p1tupsd6oarueqptwirw7iy
 <div class="foot"><h1 class="von"><a href="./Moza">Moza</a>|<a href="./NEA">NEA</a>|<a href="./team">Team</a>|<a href="./Books">AV Books</a>|<a href="./Game">AV Games</a></h1>
       <img src=><h1 href="">AV INDIA ULTD © 2024</h1>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>	
 <script src="https://avindiaultd.github.io/p/tv/tvcontrol.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
@@ -612,21 +614,5 @@ else {
 }
 }
 
-</script>
-	<script>
-  var video = document.getElementById('video');
-  if(Hls.isSupported()) {
-    var hls = new Hls();
-    hls.loadSource('https://arydigital.aryzap.com/ff5f087d60a78eea3940b58f17985e49/63b2655f/v1/0183ea2408f90b8ed5941a38bc72/0183ea24302d0b8ed5941a38bc75/ARYDigitalHDh264_1080p.m3u8');
-    hls.attachMedia(video);
-    video.play();
-  }
-  else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = 'https://arydigital.aryzap.com/ff5f087d60a78eea3940b58f17985e49/63b2655f/v1/0183ea2408f90b8ed5941a38bc72/0183ea24302d0b8ed5941a38bc75/ARYDigitalHDh264_1080p.m3u8';
-    video.addEventListener('loadedmetadata',function() {
-      video.play();
-    });
-  }
- 
 </script>
 </html>
