@@ -14,6 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#000">
 
 </head>
+
 <style>
 html{
   background-color: #000;
@@ -400,16 +401,85 @@ Exop000000000000.2729826(m)
 ehehwcqkseqyka646or27wr6t7ps1uywrt1q7fuad1prw6t725926t725p1tupsd6oarueqptwirw7iyw6f6rs7eq8t6f81w1wt17rwi4t1ptw719sfo1wr7pwfo15titpz2eurydw69ryyd1ydk1sfyf1sxg1ddyoyis55i332gxj1y7t1y1tsyitutksq7tydecge16odeyk17ptyfk1e6r2e16or1ehlx69r1ufoe16od37o16o3e6ir707e1o6o16oee6eetisgd6r3636eyorhryo6edlyoe6o2i5vmykwteo6evdjti4i3i5528254yo48dtidyk5i7iqrejftu7eyoeiuegeuteyorouhry7i6odyeysisyyo63632536tww58632eoe69eks6iw48rl63ktwi5i4i5ogwwtwo6.data
 -->
     <div class="container" id="full" onclick="aaa()">
+            <link rel="stylesheet" href="https://cdn.plyr.io/3.5.10/plyr.css" />
+      <style>
+         body {
+         max-width: 1024px;
+         }
+      #player{
+        width: 100vw;
+        height: 200px;
+      }
+      #player[poster]{
+        object-fit: cover;
+      }
+      </style>
+   </head>
+   <body>
+      <video preload="none" id="player" autoplay controls crossorigin poster="https://avindiaultd.github.io/p/assets/PLoadx1.jpg"></video>
+      <script src="https://cdn.plyr.io/3.5.10/plyr.js"></script>
+      <script src="https://cdn.jsdelivr.net/hls.js/latest/hls.js"></script>
+      <script>
+         (function () {
+         	var video = document.querySelector('#player');
+         	var playerOptions= {
+         		quality: {
+         			default: '720',
+         			options: ['144','240']
+         		}
+         	};
+         	var player;
+         	 player = new Plyr(video,playerOptions);
+         	if (Hls.isSupported()) {
+         		var hls = new Hls();
+         		hls.loadSource('https://pubads.g.doubleclick.net/ssai/event/Qyqz40bSQriqSuAC7R8_Fw/master.m3u8');
+         				//hls.loadSource('https://pubads.g.doubleclick.net/ssai/event/Qyqz40bSQriqSuAC7R8_Fw/master.m3u8');
+         	hls.attachMedia(video);
+         	hls.on(Hls.Events.MANIFEST_PARSED,function(event,data) {
+  
+ // uncomment to see data here 
+//                   		console.log('levels', hls.levels);  we get data here but not able to see in settings . 
+          
+         		playerOptions.quality = {
+         			default: hls.levels[hls.levels.length - 1].height,
+         			options: hls.levels.map((level) => level.height),
+         			forced: true,
+             // Manage quality changes
+             onChange: (quality) => {
+             	console.log('changes',quality);
+             	hls.levels.forEach((level, levelIndex) => {
+             		if (level.height === quality) {
+             			hls.currentLevel = levelIndex;
+             		}
+             	});
+             }
+         };
+        });
+       }
+         
+          // Start HLS load on play event
+          player.on('play', () => hls.startLoad());
+         
+          // Handle HLS quality changes
+          player.on('qualitychange', () => {
+          	console.log('changed');
+          	if (player.currentTime !== 0) {
+          		hls.startLoad();
+          	}
+          });
+         })();
+         
+      </script>
       <div class="WM"><!--<label>AV INDIA ULTD</label>--><img src="https://avindia1.github.io/p/assets/White_Logo_2x.png"></div>
 
-        <div class="controls" id="abc">
-          <!--<button onclick="rewind(event)"><i class="material-icons md-25">arrow_back_ios</i></button>-->
+<!-- <div class="controls" id="abc">
+          <!--<button onclick="rewind(event)"><i class="material-icons md-25">arrow_back_ios</i></button>
                       <button onclick="play(event)"><i class="fa fa-play"></i><i class="fa fa-pause"></i></button>
           <!-- <button onclick="forward(event)"><i class="material-icons md-25">arrow_forward_ios</i></button>-->
           
         </div>
       
-            <div class="timeline" id="abcd"><div class="VideoTime"><label id="VT">Live </label></div>
+<!--<div class="timeline" id="abcd"><div class="VideoTime"><label id="VT">Live </label></div>
                 <div class="bar">
                     <div>
                       <input class="innera" type="range" min="1" max="100" value="100">
@@ -417,9 +487,9 @@ ehehwcqkseqyka646or27wr6t7ps1uywrt1q7fuad1prw6t725926t725p1tupsd6oarueqptwirw7iy
                 </div>
             </div><div class="CurrentTime"><label id="CT"></label>            
               <button id="en"onclick="fullScreen(event)"><i class="material-icons md-25">fullscreen</i></button></div>
-          <!--<button onclick="download(event)"><i class="fa fa-cloud-download"></i></button>-->
+          <!--<button onclick="download(event)"><i class="fa fa-cloud-download"></i></button>
         </div>
-    </div> </div>
+    </div>--> </div>
 
 <div class="Info">
   <div class="Title" id="a"><label id="z">Now Playing : No Information Available</label>
@@ -434,8 +504,8 @@ ehehwcqkseqyka646or27wr6t7ps1uywrt1q7fuad1prw6t725926t725p1tupsd6oarueqptwirw7iy
   
   <!-- <div class="Akeb" style="margin-top: 15px;width: 100%;text-align: center;height: 60px;background-color: #f8f9ff;border-radius: 20px;padding-top: 5px;"> <a href="./MozaDownload"> <p style="margin-top: 15px;margin-left: 5px;font-family: 'Barlow Condensed', sans-serif; color: #8505ff;"> * To Enjoy this with more feature Download The App Now!</p></a>
   </div>-->
-<centre><div class="liveall" id="liveall"></div></centre>
-<video preload="none" id="player" autoplay controls crossorigin><source src="https://pubads.g.doubleclick.net/ssai/event/Qyqz40bSQriqSuAC7R8_Fw/master.m3u8" type="application/x-mpegURL"> <track src="VID.vtt" kind="subtitles" srclang="en" label="English"></video>
+<centre><div class="liveall" id="liveall"></div></centre><!--
+<video preload="none" id="player" autoplay controls crossorigin><source src="https://pubads.g.doubleclick.net/ssai/event/Qyqz40bSQriqSuAC7R8_Fw/master.m3u8" type="application/x-mpegURL"> <track src="VID.vtt" kind="subtitles" srclang="en" label="English"></video>-->
 <script src="https://cdn.plyr.io/3.5.10/plyr.js"></script>        <link rel="stylesheet" href="https://cdn.plyr.io/3.5.10/plyr.css" />
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -614,6 +684,5 @@ else {
 }
 }
 
-</script><script src="https://cdn.jsdelivr.net/hls.js/latest/hls.js"></script>
-	
+</script>
 </html>
