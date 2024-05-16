@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title></title>
+</head>
+<body>
+     <div class="container" id="full" onclick="aaa()">
+            <link rel="stylesheet" href="https://cdn.plyr.io/3.5.10/plyr.css" />
+      <style>
+         body {
+         max-width: 1024px;
+         }
+      #player{
+        width: 100vw;
+        height: 200px;
+      }
+      #player[poster]{
+        object-fit: cover;
+      }
+      </style>
+<video preload="none" id="player" autoplay controls crossorigin poster="https://avindiaultd.github.io/p/assets/PLoadx1.jpg"></video>
+      <script src="https://cdn.plyr.io/3.5.10/plyr.js"></script>
+      <script src="https://cdn.jsdelivr.net/hls.js/latest/hls.js"></script>
+      <script>
+         (function () {
+         	var video = document.querySelector('#player');
+         	var playerOptions= {
+         		quality: {
+         			default: '720',
+         			options: ['144','240']
+         		}
+         	};
+         	var player;
+         	 player = new Plyr(video,playerOptions);
+         	if (Hls.isSupported()) {
+         		var hls = new Hls();
+         		hls.loadSource('https://pubads.g.doubleclick.net/ssai/event/Qyqz40bSQriqSuAC7R8_Fw/master.m3u8');
+         				//hls.loadSource('https://pubads.g.doubleclick.net/ssai/event/Qyqz40bSQriqSuAC7R8_Fw/master.m3u8');
+         	hls.attachMedia(video);
+         	hls.on(Hls.Events.MANIFEST_PARSED,function(event,data) {
+  
+ // uncomment to see data here 
+//                   		console.log('levels', hls.levels);  we get data here but not able to see in settings . 
+          
+         		playerOptions.quality = {
+         			default: hls.levels[hls.levels.length - 1].height,
+         			options: hls.levels.map((level) => level.height),
+         			forced: true,
+             // Manage quality changes
+             onChange: (quality) => {
+             	console.log('changes',quality);
+             	hls.levels.forEach((level, levelIndex) => {
+             		if (level.height === quality) {
+             			hls.currentLevel = levelIndex;
+             		}
+             	});
+             }
+         };
+        });
+       }
+         
+          // Start HLS load on play event
+          player.on('play', () => hls.startLoad());
+         
+          // Handle HLS quality changes
+          player.on('qualitychange', () => {
+          	console.log('changed');
+          	if (player.currentTime !== 0) {
+          		hls.startLoad();
+          	}
+          });
+         })();
+         
+      </script>
+      <div class="WM"><!--<label>AV INDIA ULTD</label>--><img src="https://avindia1.github.io/p/assets/White_Logo_2x.png"></div>
+
+<!-- <div class="controls" id="abc">
+          <!--<button onclick="rewind(event)"><i class="material-icons md-25">arrow_back_ios</i></button>
+                      <button onclick="play(event)"><i class="fa fa-play"></i><i class="fa fa-pause"></i></button>
+          <!-- <button onclick="forward(event)"><i class="material-icons md-25">arrow_forward_ios</i></button>-->
+          
+        </div>
+      
+<!--<div class="timeline" id="abcd"><div class="VideoTime"><label id="VT">Live </label></div>
+                <div class="bar">
+                    <div>
+                      <input class="innera" type="range" min="1" max="100" value="100">
+  
+                </div>
+            </div><div class="CurrentTime"><label id="CT"></label>            
+              <button id="en"onclick="fullScreen(event)"><i class="material-icons md-25">fullscreen</i></button></div>
+          <!--<button onclick="download(event)"><i class="fa fa-cloud-download"></i></button>
+        </div>
+    </div>--> </div>
+</body>
+<style>
+#video{
+  background-color: #000;
+  
+  
+}
+#video[poster]{
+object-fit: cover;
+}
+.container{
+    position: relative;
+    display: flex;
+    width: max-content;
+    height: max-content;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+  width: 100vw;
+  top: 0;
+  left: 0;
+}
+.container #video {
+    width: 100vw;
+    height: 210px;
+    border-radius: 0px;
+    margin-top: -7px;
+}
+.container .controls {
+    position: absolute;
+    bottom: 70px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    opacity: 100;
+    transition: opacity 0.4s;
+}
+.container:hover .controls {
+    opacity: 1;
+}
+.container .controls button {
+    width: 50px;
+    height: 50px;
+    border-radius: 40px;
+    color: #fff;
+    font-weight: bolder;
+    text-shadow: 2px 1px 2px #000;
+    border: none;
+    cursor: pointer;
+    background-color: #000;
+    opacity: 50%;
+}
+.container .timeline {
+  background: none;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border: none;
+    border-right: 3px solid #;
+    border-left: 3px solid #;
+    margin-left: 10px;
+    margin-right: 10px;
+    transition: opacity 0.4s;
+}
+.container .timeline .bar{
+width: 100%;
+  margin-top: -10px;
+  
+}
+.container .timeline .bar .innera{
+    
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2px;
+  background-color: #FF1100;
+  outline: none;
+  opacity: 100;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+.container .timeline .bar .innera::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 25px;
+  background-color: #FF1100;
+
+}
+.container .timeline .bar .innera:active::-webkit-slider-thumb{
+  
+}
+.fa {
+    font-size: 20px !important;
+}
+.container .timeline .VideoTime{
+  padding: 2px 5px;
+   font-weight: bold;
+  color: #fff;
+  font-family: 'Barlow Condensed', sans-serif; 
+  font-size: 12px;
+  margin-right: 10px;
+  margin-left: 10px; 
+  border: 0px solid #FF1100;
+  border-radius: 10px;
+  background-color: #FF1100;
+}
+.container .timeline .CurrentTime{
+  color: #fff;
+  font-size: 14px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: -10px;
+}
+.container .timeline button{
+  color: #fff;
+  font-size: 3px;
+  border: none;
+  background: none;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: 10px;
+  text-shadow: 8px 0px 20px #000;
+}
+.container .WM label{
+  width: 50%;
+ font-weight: bold;
+  color: #fff;
+  font-family: 'Barlow Condensed', sans-serif; 
+  opacity: 50%;
+  font-size: 14px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+ /* transition: opacity 0.4s;
+  text-shadow: 8px 0px 20px #000;*/
+}
+.container .WM img{
+  width: 80px;
+  opacity: 50%;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+}
+</style>
+</html>
