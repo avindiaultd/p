@@ -1,5 +1,27 @@
+Example from
+https://www.youtube.com/playlist?list=PLXy6jF8mmOk6Xb673qs5IPzq_fATNsyoz
+Open the link in FF
+There are 39 links to watch videos
+You can create a file (see below)
+===
 #EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-INDEPENDENT-SEGMENTS
-#EXT-X-STREAM-INF:BANDWIDTH=936320,AVERAGE-BANDWIDTH=936320,CODECS="avc1.77.30,mp4a.40.2",RESOLUTION=1920x1080,FRAME-RATE=50.000
-https://m.youtube.com/watch?v=T6iouWBSxuw
+#EXTINF:0,ARTE - Philosophie - L'Intime
+https://www.youtube.com/watch?v=T6iouWBSxuw
+#EXTINF:0,Arte - Philosophie - Langage
+https://www.youtube.com/watch?v=SVgAkv8h4FQ
+...
+===
+witch is readable by VLC ( for example ) .
+=====================
+If it is for catching the streams you can create a batch file
+===
+@echo on
+rem ARTE - Philosophie - L'Intime
+youtube-dl "https://www.youtube.com/watch?v=T6iouWBSxuw" best -o L_Intime.mp4
+pause
+rem Arte - Philosophie - Langage
+youtube-dl "https://www.youtube.com/watch?v=SVgAkv8h4FQ" best -o Langage.mp4
+pause
+...
+:end
+===
