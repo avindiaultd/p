@@ -177,7 +177,7 @@ db.ref('Web/Post/').once('value', function(snapshot){
    var Title = (val.Title);
    var Date = (val.Date);
    var PostNumber = (childSnapshot.child('Post Number').val());
-Poster = Poster.replaceAll('\\' , "");
+
 Poster = Poster.replace(/'/ , "");
 Poster = Poster.replace(/"/ , "");
 PostNumber = PostNumber.replace(/"/ , "");
@@ -186,10 +186,10 @@ Date = Date.replace(/"/ , "");
 Date = Date.replace(/'/ , "");     
 Date = Date.replace(/'/ , "");
 Date = Date.replace(/"/ , "");
-//Date = Date.replace(/,/ , "");
+
 Title = Title.replace(/'/ , "");
 Title = Title.replace(/'/ , "");    
-url = url.replaceAll('\\' , "");
+
 url = url.replace(/'/ , "");
 url = url.replace(/"/ , "");
 document.getElementById("AJ9AJWOX0").innerHTML += '<li><a class="card_a" href="' + url + '">' + '<div class="card">' + '<div class="fakeimg">' + '<img  src="' + Poster + '">' + '</div>' +  '<h3>' + Title + '</h3>' + '<h6>' + Date + '</h6>' + '</div>' + '</a></li>';
@@ -209,10 +209,9 @@ document.getElementById("AJ9AJWOX0").innerHTML += '<li><a class="card_a" href="'
 date = date.replace(/'/ , "");     
 date = date.replace(/'/ , "");
 date = date.replace(/"/ , "");
-//date = date.replace(/,/ , "");
 text = text.replace(/'/ , "");
 text = text.replace(/'/ , "");    
-text = text.replaceAll('\\' , "");
+
  Author = Author.replace(/'/ , "");
 Author = Author.replace(/'/ , "");
 document.getElementById("text").innerHTML += '<p>' + text + '</p><div><h6>' + Author + '</h6>' +  ' • '  +'<h3>' + date + '</h3></div>';
