@@ -4,16 +4,17 @@
   <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
  
-  <meta name="theme-color" content="#fff">
-  <meta name="msapplication-navbutton-color" content="#fff">
-  <meta name="apple-mobile-web-app-status-bar-style" content="#fff">
+  <meta name="theme-color" content="#8505ff">
+  <meta name="msapplication-navbutton-color" content="#8505ff">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#8505ff">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="https://i.ibb.co/gzgKGpm/20230824-151647.png">
+  <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel="stylesheet">
   <title>AV INDIA / TV</title>
 </head>
 <body onload="Call_Data()">
     <header>
-      <h3 style="background-color: red;color: white;">This Service is not available</h3>
+      <!-- <h3 style="background-color: red;color: white;">This Service is not available</h3>-->
     <img src="https://avindia1.github.io/p/assets/White_Logo_2x.png"><h6>Since 2023 ( © 2024 )</h6> 
       <div class="option"><h1><a href="./award">Awards</a><a href="./rank">Rank</a><a href="./team">Team</a><a href="./game">Games</a><a href="./book">Books</a><a href="./NEA">NEA</a><a href="./Moza">Moza</a><a href="./help">Help</a><a href="./tv">TV</a></h1></div>
   </header>
@@ -23,6 +24,7 @@
   
     <div class="Live"><div class="title"><h1 id="a">Live •</h1></div>
   </div>    <div class="livcon" id="live"></div>
+  <div class="liveall" id="liveall"></div>
   
     <div class="News"><div class="title"><h1 id="a">News</h1></div>
   </div>    <div class="newscon" id="news"></div>
@@ -130,15 +132,67 @@ document.getElementById("entertainment").innerHTML += '<li><a class="card_a" hre
 
 document.getElementById("kids").innerHTML += '<li><a class="card_a" href="' + url + '">' + '<div class="card">' + '<div class="fakeimg">' + '<img  src="' + Poster + '">' + '</div>' +  '<h3>' + Title + '</h3>' + '</div>' + '</a></li>';
           });
+          document.getElementById("youtube").innerHTML += '<button onclick="loadm()" id="more" class="material-icons md-25">add</button>';
+          
+document.getElementById("live").innerHTML += '<button onclick="loadm()" id="morela" class="material-icons md-25">add</button>';
+          
+document.getElementById("live").innerHTML += '<button onclick="loadl()" id="morelb" class="material-icons md-25">remove</button>';
+          
+document.getElementById("live").innerHTML += '<button onclick="loadb()" id="morelc" class="material-icons md-25">add</button>';
+          document.getElementById("morelb").style.width = '0vw';
+document.getElementById("morelc").style.width = '0vw';                  
+document.getElementById("morelb").style.visibility = 'hidden';  
+document.getElementById("morelc").style.visibility = 'hidden';
+
+document.getElementById("news").innerHTML += '<button onclick="loadm()" id="more" class="material-icons md-25">add</button>';
+          
+document.getElementById("entertainment").innerHTML += '<button onclick="loadm()" id="more" class="material-icons md-25">add</button>';
+          
+document.getElementById("kids").innerHTML += '<button onclick="loadm()" id="more" class="material-icons md-25">' + 'add' + '</button>';          
         }
-   });  
+   });    
 }
+function loadm() {
+  db.ref('Web/tv/all/live/').once('value', function(snapshot){
+        if(snapshot.exists()){
+ snapshot.forEach(function(childSnapshot){
+                var val = childSnapshot.val();
+                var key = childSnapshot.key;
+   var Poster = String((val.Poster));
+   var url = String((val.Url));
+   var Title = (val.Title);
+   var Date = (val.Date);
+   var PostNumber = (childSnapshot.child('Post Number').val());
+
+document.getElementById("liveall").innerHTML += '<li><a class="card_a" href="' + url + '">' + '<div class="card" id="cardvh">' + '<div class="fakeimg">' + '<img  src="' + Poster + '">' + '</div>' +  '<h3>' + Title + '</h3>' + '</div>' + '</a></li>';
+          });
+        }
+   });
+  document.getElementById("morela").style.visibility = 'hidden';  
+document.getElementById("morelc").style.width = '0px';
+document.getElementById("morela").style.width = '0px';  
+document.getElementById("morelb").style.width = 'auto';       
+document.getElementById("morelb").style.visibility = 'visible';      
+}
+
+function loadl() {  
+document.getElementById("morelc").style.width = 'auto';
+document.getElementById("morelb").style.width = '0px';     
+document.getElementById("morelc").style.visibility = 'visible';  
+document.getElementById("morelb").style.visibility = 'hidden';    document.getElementById("liveall").style.visibility = 'hidden';  
+document.getElementById("liveall").style.height = '0px';
+}
+
+function loadb() {
+document.getElementById("morelc").style.width = '0px';
+document.getElementById("morelb").style.width = 'auto';   document.getElementById("morelc").style.visibility = 'hidden';  
+document.getElementById("morelb").style.visibility = 'visible';    document.getElementById("liveall").style.visibility = 'visible';  
+document.getElementById("liveall").style.height = 'auto';
+}
+
   </script>  
 <style>
-*{margin: 0px;font-family: verdana;
- 
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none; }
+*{margin: 0px;font-family: verdana;}
 header{
   display: inline-block;
   position: fixed;
@@ -453,6 +507,72 @@ header h2{
   margin-bottom: 0px;
 }
 #kids a{
+  text-decoration: none;
+  color: #2196F3;
+}
+#more{
+  border: none;
+  border-radius: 20px;
+  margin: 0px 10px;
+}
+#morela{
+  border: none;
+  border-radius: 20px;
+  margin-left: 0px;
+  margin-right: -30px;
+}
+#morelb{
+  border: none;
+  border-radius: 20px;
+  margin-left: 13px;
+  margin-right: -13px;
+}
+#morelc{
+  border: none;
+  border-radius: 20px;
+  margin-left: 0px;
+  margin-right: 13px;
+}
+#liveall{
+  width: 100vw;
+  padding-top: 10px;
+  margin-top: 0px;
+}
+#liveall .card h3{
+  margin-left: 1px;
+  margin-top: 5px;
+  width: 90px;
+  margin-bottom: 0px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+#liveall .card{
+  border: 0px solid #000;
+  padding: 7px 7px;
+  border-radius: 5px;
+  background-color: #F7F7F7;
+  width: 90px;
+}
+#liveall .card_a{
+  text-decoration: none;
+  color: #000;  
+}
+#liveall li{
+  list-style: none;
+  /*overflow: hidden;*/
+  margin: 7px;
+  display: inline-block;
+}
+#liveall .card .fakeimg img{
+  width: 90px;
+  height: 90px;
+  border: 0px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 0px;
+  object-fit: cover;
+}
+#liveall a{
   text-decoration: none;
   color: #2196F3;
 }
