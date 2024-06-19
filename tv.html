@@ -192,7 +192,13 @@ document.getElementById("liveall").style.height = 'auto';
 
   </script>  
 <style>
-*{margin: 0px;font-family: verdana;}
+*{
+margin: 0px;
+font-family: verdana;
+-ms-overflow-style: none;  
+/* IE and Edge */
+  scrollbar-width: none; 
+}
 header{
   display: inline-block;
   position: fixed;
