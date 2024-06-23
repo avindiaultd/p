@@ -80,6 +80,6 @@ db.ref('avindia/website/rank/' + item).once('value', function(snapshot) {
   }
   }
   }
-  document.getElementById("a").innerHTML +='<div class="chat"><ul><li><div class="usericon"><img src="'+pic+'"></div><div class="userinfo"><h5>'+name+'<i class="material-icons md-25" style="color: #01B24E;font-size: 25px;margin-top: -20px;">verified</i></h5><div class="rank"><b style="margin-left: -16px;">'+post+'</b><p class="material-icons md-25">'+star+'<b style="color: '+color_+';font-size: 10px;margin-top: 0px;">&nbsp;( '+change+' )</b></p><p class="info" style="color: #9c9c9c;font-size: 10px;margin-top: -10px;">'+data+'<br><b style="color: #818181;">Current : </b>'+current_post+'</p></b></div></div></div></li></ul></div></div>';
+  document.getElementById("a").innerHTML +='<div class="chat"><ul><li><div class="usericon"><img src="'+pic+'"></div><div class="userinfo"><h5>'+name+'<i class="material-icons md-25" style="color: #01B24E;font-size: 25px;margin-top: -20px;">verified</i></h5><div class="rank"><b style="margin-left: -16px;">'+post+'</b><br><p class="material-icons md-25">'+star+'<b style="color: '+color_+';font-size: 10px;margin-top: 0px;">&nbsp;( '+change+' )</b></p><p class="info" style="color: #9c9c9c;font-size: 10px;margin-top: -10px;">'+data+'<br><b style="color: #818181;">Current : </b>'+current_post+'</p></b></div></div></div></li></ul></div></div>';
 });
 }
