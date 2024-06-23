@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "970872368951",
+    "firebase_url": "https://avindia-db2bd-default-rtdb.firebaseio.com",
+    "project_id": "avindia-db2bd",
+    "storage_bucket": "avindia-db2bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970872368951:android:0a05ab8c1cded5d7c6b4b2",
+        "android_client_info": {
+          "package_name": "com.avindia.moza"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "970872368951-8tv4cejsukebmll95d21gbn3gvvp4qq7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAirDvBEIPFB_3TEnCzTo4vJBpO0hPm2B8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "970872368951-8tv4cejsukebmll95d21gbn3gvvp4qq7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
