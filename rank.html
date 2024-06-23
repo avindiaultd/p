@@ -6,7 +6,7 @@
  <link rel="icon" type="image/x-icon" href="https://i.ibb.co/gzgKGpm/20230824-151647.png">
 </head>
 <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel="stylesheet">
-<body>
+<body onload="Call_Data()">
   <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel="stylesheet">
  <!-- <nav><a href="./Home"><button class="material-icons md-25">arrow_back</button></a><label></label></nav>
   <style>
@@ -24,17 +24,8 @@ nav button{
 }
   </style>-->
   <div class="head" style="margin-left: 15px;display: inline-block;margin-top: 0px;"><h1 style="color: #059AFF;">AV INDIA ALL TIME RANKS<a style="font-size: 20px;color: #035186;">  Position and work</a></h1></div>
-    <div class="chat">
-  <ul>
-<li><div class="usericon"><img src="https://i.ibb.co/3MTFVDp/Owner.jpg"></div><div class="userinfo"><h5>Azad Verma<a>Founder</a><a style="margin-left: 5px">M.D</a><i class="material-icons md-25" style="color: #01B24E;font-size: 25px;margin-top: -20px;">verified</i></h5><div class="rank"><p class="material-icons md-25">gradegradegradegradegradegradegradegradegradegradegradegradegradegrade<b style="color: gray;font-size: 10px; ">+0</b></p><p class="info" style="color: #9c9c9c;font-size: 10px;margin-top: -10px;">Founder of AV INDIA and Moza can it is only 14 years old and the C.E.O of AV INDIA is the best freind of Azad Verma<br><b style="color: #818181;">Current : </b>Managing Director and Designer of AV INDIA</p><a style="margin-left: -06px;"><b>Designer</b></a><a style="margin-left: -3px;"><b>Developer</b></a><a style="margin-left: -03px;"><b>Editor</b></a></div></div></div></div>
-
-  <div class="chat"><ul><li><div class="usericon"><img src="https://i.ibb.co/2ZJm3Sg/Screenshot-2023-05-04-14-36-47-41-6012fa4d4ddec268fc5c7112cbb265e7.jpg"></div><div class="userinfo"><h5>Tanmay Bhati<a>C.E.O</a><i class="material-icons md-25" style="color: #01B24E;font-size: 25px;margin-top: -20px;">verified</i></h5><div class="rank"><p class="material-icons md-25">gradegradegradegradegrade<b style="color: red;font-size: 10px; ">-1</b></p> </p><p class="info" style="color: #9C9C9C;font-size: 10px;margin-top: -10px;">The Founder & M.D of AV INDIA is the best freind of Tanmay Bhati. No More About the CEO<br><b style="color: #818181;">Current : </b>Chief Cxecutive Officer of AV INDIA</p></div></div></div></div>
-
-<div class="chat"><ul><li><div class="usericon"><img src="https://i.ibb.co/cDnj30s/IMG-20230604-145856.jpg"></div><div class="userinfo"><h5>Uttam Koli<a>Chief - Supervisor</a><i class="material-icons md-25" style="color: #01B24E;font-size: 25px;margin-top: -20px;">verified</i></h5><div class="rank"><p class="material-icons md-25">gradegradegrade<b style="color: red;font-size: 10px; ">-1</b></p><p class="info" style="color: #9C9C9C;font-size: 10px;margin-top: -10px;">No Information provided by the CEO<br><b style="color: #818181;">Current : </b>Supervisor of AV INDIA</p><a style="margin-left: -06px;"><b>Designer</b></a></div></div></div></div>
-
+<div id="a"></div>
   
-<div class="chat"><ul><li><div class="usericon"><img src="https://i.ibb.co/z4cxxJ4/IMG-20230726-131558.jpg"></div><div class="userinfo"><h5>Priyanjal Singh<a>Supervisor</a><i class="material-icons md-25" style="color: #01B24E;font-size: 25px;margin-top: -20px;">verified</i></h5><div class="rank"><p class="material-icons md-25"><!--grade--><b style="color: gray;font-size: 10px; ">+0</b></p><p class="info" style="color: #9C9C9C;font-size: 10px;margin-top: -10px;">No Information provided by the CEO<br><b style="color: #818181;">Current : </b>Supervisor of AV INDIA</p></div></div></div></div>
-
  <div class="chat"style="opacity: 30%;"><ul><li><div class="usericon"><img src="https://i.ibb.co/X4bfxCs/Screenshot-2023-06-04-14-54-53-07-6012fa4d4ddec268fc5c7112cbb265e7.jpg"></div><div class="userinfo"><h5>Sourav Singh<a>Manager</a><i class="material-icons md-25" style="color: #CCCCCC;font-size: 25px;margin-top: -20px;">verified</i></h5><div class="rank"><p class="material-icons md-25">gradegradegrade</p><p class="info" style="color: #9C9C9C;font-size: 10px;margin-top: -10px;">No Information provided by the CEO<br><b style="color: #818181;">Current : </b>Manager of AV INDIA</p></div></div></div></div>
 
            <div class="chat" style="opacity: 30%;"><ul><li><div class="usericon"><img src="https://i.ibb.co/1Zzfx8M/IMG-20240225-150607.jpg"></div><div class="userinfo"><h5>Varun Thapa<a>Supervisor</a><i class="material-icons md-25" style="color: #CCCCCC;font-size: 25px;margin-top: -20px;">verified</i></h5><div class="rank"><p class="material-icons md-25">grade</p><p class="info" style="color: #9C9C9C;font-size: 10px;margin-top: -10px;">No Information provided by the CEO<br><b style="color: #818181;">Current : </b>Supervisor of AV INDIA</p></div></div></div></div>
@@ -158,7 +149,85 @@ nav button{
   font-size: 18px;
   margin-bottom: -20px;
 }
-  </style><script>
+  </style>
+  <script src="./firebase-config.js"></script>
+
+  <script>
+      import { firebaseConfig } from './firebase-config.js';
+  firebase.initializeApp(firebaseConfig);
+    var db = firebase.database();
+db.ref('avindia/website/rank/').once('value', function(snapshot) {
+  var data = snapshot.val();
+  var position = (data.position);
+  position = position.replace(/'/ , "");
+  position = position.replace(/"/ , "");
+  position = position.replace(/'/ , "");
+  position = position.replace(/"/ , "");
+  position = position.split(',');
+position.forEach(Call_Data)
+
+});
+function Call_Data(item,index) {
+db.ref('avindia/website/rank/' + item).once('value', function(snapshot) {
+  var call = snapshot.val();
+  var current_post = decodeURI((call.current_post));
+  var data = decodeURI((call.data));
+  var name = decodeURI((call.name));
+  var pic = decodeURIComponent((call.pic));
+  var post = decodeURI((call.post));
+  var star = decodeURI((call.star));
+  var change = decodeURI((call.change));
+  current_post = current_post.replace(/'/ , "");
+  current_post = current_post.replace(/"/ , "");
+  name = name.replace(/'/ , "");
+  name = name.replace(/"/ , "");
+  data = data.replace(/'/ , "");
+  data = data.replace(/"/ , "");
+  pic = pic.replace(/'/ , "");
+  pic = pic.replace(/"/ , "");
+  post = post.replace(/'/ , "");
+  post = post.replace(/"/ , "");
+  star = star.replace(/'/ , "");
+  star = star.replace(/"/ , "");
+  change = change.replace(/'/ , "");
+  change = change.replace(/"/ , "");
+  current_post = current_post.replace(/'/ , "");
+  current_post = current_post.replace(/"/ , "");
+  name = name.replace(/'/ , "");
+  name = name.replace(/"/ , "");
+  data = data.replace(/'/ , "");
+  data = data.replace(/"/ , "");
+  pic = pic.replace(/'/ , "");
+  pic = pic.replace(/"/ , "");
+  post = post.replace(/'/ , "");
+  post = post.replace(/"/ , "");
+  star = star.replace(/'/ , "");
+  star = star.replace(/"/ , "");
+  change = change.replace(/'/ , "");
+  change = change.replace(/"/ , "");
+  console.log(current_post);
+  console.log(data);
+  console.log(name);
+  console.log(decodeURI(pic));
+  console.log(post);
+  console.log(current_post);
+  var color_ = "gray";
+  if(change.includes("0") == true) {
+  color_ = "gray";
+  }
+  else{
+  if(change.includes("+") == true) {
+  color_ = "green";
+  }
+  else{
+  if(change.includes("-") == true) {
+  color_ = "red";
+  }
+  }
+  }
+  document.getElementById("a").innerHTML +='<div class="chat"><ul><li><div class="usericon"><img src="'+pic+'"></div><div class="userinfo"><h5>'+name+'<i class="material-icons md-25" style="color: #01B24E;font-size: 25px;margin-top: -20px;">verified</i></h5><div class="rank"><p class="material-icons md-25">'+star+'<b style="color: '+color_+';font-size: 10px;margin-top: 0px;">&nbsp;( '+change+' )</b></p><p class="info" style="color: #9c9c9c;font-size: 10px;margin-top: -10px;">'+data+'<br><b style="color: #818181;">Current : </b>'+current_post+'</p><b style="margin-left: -16px;">'+post+'</b></b></div></div></div></li></ul></div></div>';
+});
+}
 function EF() {
 window.open('https://azadop.github.io/o/Form')
 }
