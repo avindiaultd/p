@@ -1,0 +1,149 @@
+  <html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['2024', 'progress', 'regress'],
+          ['jan',  35,      65],
+          ['feb',  12,      88],
+          ['mar',  8,      92],
+          ['apr',  46,      54],
+          ['may',  3,       97],
+          ['june',  80,      20]
+        ]);
+
+        var options = {
+          title: 'App development ( Mozz! ) %',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          colors: ['#00B407','#FF1100']
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['2024', 'progress', 'regress'],
+          ['jan',  23,      77],
+          ['feb',  12,      88],
+          ['mar',  2,      98],
+          ['apr',  2,      98],
+          ['may',  0,       100],
+          ['june',  0,      100]
+        ]);
+
+        var options = {
+          title: 'App development ( NEA ) %',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          colors: ['#00B407','#FF1100']
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart0'));
+
+        chart.draw(data, options);
+      }
+    </script>
+ <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['2024', 'progress', 'regress'],
+          ['jan',  32,      68],
+          ['feb',  16,      84],
+          ['mar',  3,      97],
+          ['apr',  50,      50],
+          ['may',  57,       43],
+          ['june',  93,      7]
+        ]);
+
+        var options = {
+          title: 'Web development ( Website ) %',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          colors: ['#00B407','#FF1100']
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart1'));
+
+        chart.draw(data, options);
+      }
+    </script>
+ <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['2024', 'progress', 'regress'],
+          ['jan',  25,      75],
+          ['feb',  10,      90],
+          ['mar',  9,      91],
+          ['apr',  8,      92],
+          ['may',  6,       94],
+          ['june',  4,      96]
+        ]);
+
+        var options = {
+          title: 'Progress ( Members ) %',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          colors: ['#00B407','#FF1100']
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart2'));
+
+        chart.draw(data, options);
+      }
+    </script>
+ <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['2024', 'progress', 'regress'],
+          ['jan',  24,      76],
+          ['feb',  23,      77],
+          ['mar',  4,      96],
+          ['apr',  56,      44],
+          ['may',  2,       98],
+          ['june',  63,      37]
+        ]);
+
+        var options = {
+          title: 'Company development ( AV INDIA ) %',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          colors: ['#00B407','#FF1100']
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart3'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+  </head>
+  <body>
+    <div id="curve_chart" color="green" style="width: 900px; height: 500px"></div>
+    <div id="curve_chart0" color="green" style="width: 900px; height: 500px"></div>
+    <div id="curve_chart1" color="green" style="width: 900px; height: 500px"></div>
+    <div id="curve_chart2" color="green" style="width: 900px; height: 500px"></div>
+    <div id="curve_chart3" color="green" style="width: 900px; height: 500px"></div>
+  </body>
+</html>
