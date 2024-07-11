@@ -26,7 +26,7 @@ function Call_Data(item,index) {
 db.ref('avindia/website/rank/' + item).once('value', function(snapshot) {
   var call = snapshot.val();
   var current_post = decodeURI((call.current_post));
-  var data = decodeURI((call.data));
+  var data = decodeURIComponent((call.data));
   var name = decodeURI((call.name));
   var pic = decodeURIComponent((call.pic));
   var post = decodeURI((call.post));
