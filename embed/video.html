@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Video Player</title>
+    <!-- <link rel="stylesheet" href="https:///saqibbedar/custom-video-player/refs/heads/main/styles.css">
+--></head>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+ 
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+html, body{
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+}
+a {
+    text-decoration: none;
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+:root{
+    --btn-65-height: 30px;
+    --btn-65-width: 30px;
+    --aspect-ratio: 16/9;
+    --darkMode: #0f0f0f;
+    --svg-clr-light: white;
+    --clr-light: #fff;
+    --clr-dark: #0f0f0f;
+    --svg-clr-dark: var(--darkMode);
+}
+
+/* Active classes */
+.active{
+    visibility: hidden;
+    opacity: 0;
+}
+.full-screen{
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100%;
+}
+.filter {
+    filter: brightness(0.8);
+}
+.checked {
+    background: rgba(255, 255, 255, 0.104);
+}
+/* End Active Classes */
+
+
+/* main video container */
+.container{
+    position: relative;
+    aspect-ratio: 16/9; 
+    width: 100%;
+    max-width: 900px;
+    border-radius: 0px;
+    overflow: hidden;
+    overflow: hidden;
+    background: var(--clr-dark);
+}
+.container .main-play-pause-button{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 60px;
+    background: #00000076;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100;
+}
+.container .main-play-pause-button svg{
+    fill: var(--svg-clr-light);
+}
+/* main <video> class */
+.bedar-video {
+    width: 100%;
+    height: 100%;
+    transition: filter .1s ease;
+    background-color: #000;
+}
+/* main-controls-wrapper */
+.main-controls-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    position: absolute;
+    left: 0px;
+    bottom: -6.6px;
+    z-index: 100;    background: linear-gradient(360deg, #0000007d, transparent);
+    transition: visibility .3s ease, opacity .3s ease;
+    padding: 0px 18px 10px 18px;
+}
+.controls-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.controls-wrapper .view-full-screen{
+    margin-right: -7.2px;
+}
+.controls-wrapper :where(.skip-backward svg){
+    transform: rotate(180deg);
+    margin-left: -10px;
+}
+.bedar-left-controls{
+    display: flex;
+}
+
+.controls-wrapper :where(.play-pause-area, .volume-video-timing-area, .bedar-right-controls){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1px;
+}
+.play-pause-area button{
+    margin: -1.5px;
+}
+.video-timer {
+    font-family: inherit;
+    color: #ccc;
+    font-size: 1.2vw;
+}
+.bedar-right-controls{
+    position: relative;
+}
+.controls-wrapper :where(.playback-speed-icon, .pic-in-pic, .view-full-screen, .play-btn, .skip-backward, .skip-forward, .volume-button, .playback-speed-icon){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: var(--btn-65-height);
+    width: var(--btn-65-width);
+    background: none;
+    border: none;
+    padding: 0;
+}
+.controls-wrapper svg{
+    cursor: pointer;
+    fill: var(--svg-clr-light); 
+}
+.playback-options .playback-speed-icon svg{
+    height: 20px;
+}
+.options{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px;
+    position: absolute;
+    right: 0;
+    bottom: 55px;
+    background: #00000063;
+    border-radius: 5px;
+    width: 160px;
+    color: var(--clr-light);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility .3s ease, opacity .3s ease;
+}
+.playback-options:hover .options{
+    visibility: visible;
+    opacity: 1;
+}
+.options li {
+    font-size: 18px;
+    line-height: normal;
+    padding: 4px;
+    list-style: none;
+    border-radius: 4px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+.options li:hover{
+    background: rgba(255, 255, 255, 0.104);
+}
+.view-full-screen svg{
+    scale: 1;
+    transition: scale .3s ease;
+}
+.view-full-screen svg:hover{
+    scale: 1.1;
+}
+/* style input-range */
+.video-progress{
+    width: 100%;
+    height: 5px;
+}
+.volume-range {
+    display: none;
+    height: 3.4px;
+    max-width: 100%;
+    width: 45px;
+    margin-right: 9px;
+}
+.video-progress::-webkit-slider-thumb{
+    width: 12px;
+    height: 12px;
+}
+.volume-range::-webkit-slider-thumb{
+    width: 8px;
+    height: 8px;
+    background: #ffffffd2;
+}
+.volume-range, .video-progress {
+    border-radius: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+/* style thumb */
+.volume-range::-webkit-slider-thumb, .video-progress::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--clr-light);
+    border-radius: 50%;
+}
+
+.volume-video-timing-area:hover .volume-range {
+    display: block;
+}
+
+/* Responsive */
+@media (width <= 767px) {
+    :root{
+        --btn-65-height: 27px;
+        --btn-65-width: 27px;
+    }
+    .controls-wrapper :where(.playback-speed-icon, .pic-in-pic, .view-full-screen, .play-btn, .skip-backward, .skip-forward, .volume-button, .playback-speed-icon){
+        height: var(--btn-65-height);
+        width: var(--btn-65-width);
+    }
+    .video-timer {
+        font-size: 2.5vw;
+    }
+    .volume-video-timing-area:hover .volume-range {
+        display: none;
+    }
+    .options{
+        gap: 2px;
+        padding: 6px;
+        bottom: 40px;
+        width: 120px;
+    }
+    .options li {
+        font-size: 14px;
+        line-height: 14.5px;
+        width: 100%;
+    }
+    .playback-options .playback-speed-icon svg{
+        height: 19px;
+    }
+}
+
+@media (width <= 481px) {
+    .video-timer{
+        font-size: 2.5vw;
+    }
+}
+
+/* Style progress bar more once get free */
+
+/* .video-progress::-webkit-slider-runnable-track,
+.volume-range::-webkit-slider-runnable-track {
+    background: #007BFF; 
+    height: 3.4px;
+    -webkit-appearance: none;
+    appearance: none;
+
+} */
+/* 
+.video-progress::-moz-range-track,
+.volume-range::-moz-range-track {
+    background: #007BFF;
+}
+.video-progress::-ms-fill-lower,
+.volume-range::-ms-fill-lower {
+    background: #007BFF; 
+} 
+*/
+/* @keyframes bgAnimation {
+  0% {
+    background: linear-gradient(to right, #dcdcdc, #e3e3e3);
+  }
+  100% {
+    background: linear-gradient(to right, #e3e3e3, #dcdcdc);
+  }
+} */
+    </style>
+<body onload=''>
+    
+    <!-- <iframe src="https://avindiaultd.github.io/nea/view?10|Azad%2Bhttps://firebasestorage.googleapis.com/v0/b/avindia-db2bd.appspot.com/o/NEA%2FUSERS%2FDP%2F189.jpg?alt=media&token=e5cef642-c61b-4c93-a826-7133ca713ec8%2B@azad46670%2BClass 10%2Bnull%2Btrue" height="600px" width="500px"></iframe>    
+  -->
+    <div class="container">
+
+        <div class="main-play-pause-button" onclick="togglePlayPause()">
+            <svg height="100%" viewBox="0 0 36 36" width="100%"><path d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z" id="ytp-id-41"></path></svg>
+        </div>
+
+        <div class="main-controls-wrapper">
+
+            <div class="video-progress-area">
+                <input type="range" class="video-progress" min="0" step="any" value="0" data-value="0">
+            </div>
+
+            <div class="controls-wrapper">
+                <div class="bedar-left-controls">
+                    <div class="play-pause-area">
+                        <button class="skip-backward">
+                            <svg height="100%" viewBox="0 0 36 36" width="100%"><path class="ytp-svg-fill" d="M 12,24 20.5,18 12,12 V 24 z M 22,12 v 12 h 2 V 12 h -2 z" id="ytp-id-13"></path></svg>
+                        </button>
+                        <button class="play-btn">
+                            <svg height="100%" viewBox="0 0 36 36" width="100%"><path d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z" id="ytp-id-41"></path></svg>
+                        </button>
+                        <button class="skip-forward">
+                            <svg height="100%" viewBox="0 0 36 36" width="100%"><path class="ytp-svg-fill" d="M 12,24 20.5,18 12,12 V 24 z M 22,12 v 12 h 2 V 12 h -2 z" id="ytp-id-13"></path></svg>
+                        </button>
+                    </div>
+        
+                    <div class="volume-video-timing-area">
+                        <button class="volume-button">
+                            <svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><defs><clipPath><path d="m 14.35,-0.14 -5.86,5.86 20.73,20.78 5.86,-5.91 z"></path><path d="M 7.07,6.87 -1.11,15.33 19.61,36.11 27.80,27.60 z"></path><path d="M 9.09,5.20 6.47,7.88 26.82,28.77 29.66,25.99 z" transform="translate(0, 0)"></path></clipPath><clipPath><path d="m -11.45,-15.55 -4.44,4.51 20.45,20.94 4.55,-4.66 z" transform="translate(0, 0)"></path></clipPath></defs><path d="M8,21 L12,21 L17,26 L17,10 L12,15 L8,15 L8,21 Z M19,14 L19,22 C20.48,21.32 21.5,19.77 21.5,18 C21.5,16.26 20.48,14.74 19,14 ZM19,11.29 C21.89,12.15 24,14.83 24,18 C24,21.17 21.89,23.85 19,24.71 L19,26.77 C23.01,25.86 26,22.28 26,18 C26,13.72 23.01,10.14 19,9.23 L19,11.29 Z" ></path><path class="turn-off-volume" d="M 9.25,9 7.98,10.27 24.71,27 l 1.27,-1.27 Z" id="ytp-id-16" style="display: none;"></path></svg>
+                        </button>
+
+                        <input type="range" class="volume-range" min="0" max="1" step="any">
+
+                        <div class="video-timer">
+                            <span class="currentTime">00:00</span>
+                            <span class="separator">/</span>
+                            <span class="video-duration">00:00</span>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="bedar-right-controls">
+
+                    <div class="playback-options">
+                        <button class="playback-speed-icon">
+                            <svg viewBox="0 0 24 24" width="21.5"><path d="M10,8v8l6-4L10,8L10,8z M6.3,5L5.7,4.2C7.2,3,9,2.2,11,2l0.1,1C9.3,3.2,7.7,3.9,6.3,5z            M5,6.3L4.2,5.7C3,7.2,2.2,9,2,11 l1,.1C3.2,9.3,3.9,7.7,5,6.3z            M5,17.7c-1.1-1.4-1.8-3.1-2-4.8L2,13c0.2,2,1,3.8,2.2,5.4L5,17.7z            M11.1,21c-1.8-0.2-3.4-0.9-4.8-2 l-0.6,.8C7.2,21,9,21.8,11,22L11.1,21z            M22,12c0-5.2-3.9-9.4-9-10l-0.1,1c4.6,.5,8.1,4.3,8.1,9s-3.5,8.5-8.1,9l0.1,1 C18.2,21.5,22,17.2,22,12z"></path></svg>
+                        </button>
+                        <div class="options">
+                            <li data-speed="2">2x</li>
+                            <li data-speed="1.5">1.5x</li>
+                            <li data-speed="1" class="checked">Normal</li>
+                            <li data-speed="0.75">0.75x</li>
+                            <li data-speed="0.5">0.5x</li>
+                        </div>
+                    </div>
+
+                    <button class="pic-in-pic">
+                        <svg height="100%" viewBox="0 0 36 36" width="100%"><path d="M25,17 L17,17 L17,23 L25,23 L25,17 L25,17 Z M29,25 L29,10.98 C29,9.88 28.1,9 27,9 L9,9 C7.9,9 7,9.88 7,10.98 L7,25 C7,26.1 7.9,27 9,27 L27,27 C28.1,27 29,26.1 29,25 L29,25 Z M27,25.02 L9,25.02 L9,10.97 L27,10.97 L27,25.02 L27,25.02 Z"></path></svg>
+                    </button>
+                    <button class="view-full-screen">
+                        <svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><g class="fullscreen-button-corner-0"><path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z" ></path></g><g class="fullscreen-button-corner-1"><path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 0,0 z" id="ytp-id-8"></path></g><g class="fullscreen-button-corner-2"></use><path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 0,0 z"></path></g><g class="fullscreen-button-corner-3"><path d="M 12,20 10,20 10,26 l 6,0 0,-2 -4,0 0,-4 0,0 z" ></path></g></svg>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <video class="bedar-video " src="" type="video/mp4"></video>
+
+    </div>
+    <script>
+    var queryString = location.search.substring(1);
+var c = queryString.split("=");
+    var VID = decodeURIComponent(c[1]);    
+    console.log(VID);
+alert(VID)
+    console.log(window.location.href);
+
+// selectors
+const videoID = VID;
+const video = document.querySelector(".bedar-video");
+const volumeButton = document.querySelector(".volume-button");
+const volumeRangeSlider = document.querySelector(".volume-range");
+const turnOffVolumeButton = document.querySelector(".turn-off-volume");
+const mainControlsWrapper = document.querySelector(".main-controls-wrapper");
+const playBackSpeedOptions = document.querySelector(".options");
+const pictureInPicture = document.querySelector(".pic-in-pic");
+const viewFullScreen = document.querySelector(".view-full-screen");
+const skipBackward = document.querySelector(".skip-backward");
+const skipForward = document.querySelector(".skip-forward");
+const playButton = document.querySelector(".play-btn"); 
+const videoProgress = document.querySelector(".video-progress");
+const mainPlayPauseButton = document.querySelector(".main-play-pause-button");
+const currentVideoTime = document.querySelector(".currentTime");
+const videoDuration = document.querySelector(".video-duration");
+video.src = VID; // Set the new source URL
+  video.load(); // Reload the video element to pick up the new source
+ 
+// check state
+let isClicked = false;
+let isMuted = false;
+let timeoutId;
+
+// responsiveProgress
+videoProgress.onchange = ()=>{
+    video.currentTime = videoProgress.value;
+}
+
+// get video duration
+video.addEventListener('loadedmetadata', e => {
+    videoProgress.max = e.target.duration;
+    videoDuration.innerText = formatTime(e.target.duration);
+});
+
+// format video time
+const formatTime = time => {
+    let seconds = Math.floor(time % 60),
+        minutes = Math.floor(time / 60) % 60,
+        hours = Math.floor(time / 3600);
+    seconds = seconds < 10 ? `0${seconds}` : seconds;
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    hours = hours < 10 ? `0${hours}` : hours;
+    if(hours == 0){
+        return `${minutes}:${seconds}`
+    }
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+// updateTime and set progressValue
+video.addEventListener("timeupdate", (e)=>{
+    let {currentTime, duration} = e.target;
+    // let percent = (currentTime / duration) * 100;
+    videoProgress.value = currentTime;
+    currentVideoTime.innerText = formatTime(currentTime);
+})
+
+// get video current time onclick of videoProgress
+videoProgress.addEventListener("click", e =>{
+    let videoProgressWidth = video.clientWidth - `${18}px`;
+    video.currentTime = (e.offsetX / videoProgressWidth) * video.duration;
+})
+
+// view full screen
+const fullScreen = () => {
+    var container = document.querySelector(".container");
+    container.classList.toggle("full-screen");
+    
+    if (container.classList.contains("full-screen")) {
+        viewFullScreen.innerHTML = `<svg height="100%" viewBox="0 0 36 36" width="100%"><g class="fullscreen-button-corner-2"><path d="m 14,14 -4,0 0,2 6,0 0,-6 -2,0 0,4 0,0 z" id="ytp-id-233"></path></g><g class="fullscreen-button-corner-3"><path d="m 22,14 0,-4 -2,0 0,6 6,0 0,-2 -4,0 0,0 z" id="ytp-id-234"></path></g><g class="fullscreen-button-corner-0"><path d="m 20,26 2,0 0,-4 4,0 0,-2 -6,0 0,6 0,0 z"></path></g><g class="fullscreen-button-corner-1"><path  d="m 10,22 4,0 0,4 2,0 0,-6 -6,0 0,2 0,0 z"></path></g></svg>`;
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+        document.documentElement.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        viewFullScreen.innerHTML = `<svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><g class="fullscreen-button-corner-0"><path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z" ></path></g><g class="fullscreen-button-corner-1"><path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 0,0 z" id="ytp-id-8"></path></g><g class="fullscreen-button-corner-2"></use><path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 0,0 z"></path></g><g class="fullscreen-button-corner-3"><path d="M 12,20 10,20 10,26 l 6,0 0,-2 -4,0 0,-4 0,0 z" ></path></g></svg>`
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) { /* Firefox */
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) { /* IE/Edge */
+        document.msExitFullscreen();
+      }
+    }
+  }  
+
+// picture in picture
+pictureInPicture.addEventListener("click", ()=>{
+    video.requestPictureInPicture();
+})
+
+// handlers
+const handleVolumeButton = ()=>{
+    isMuted = !isMuted;
+    if(isMuted){
+        video.muted = true;
+        turnOffVolumeButton.style.display = "block";
+        volumeRangeSlider.value = 0; // set the slider value to 0 when the volume is muted
+    }
+    else{
+        video.muted = false;
+        turnOffVolumeButton.style.display = "none";
+        volumeRangeSlider.value = video.volume; // update the slider value to match the video volume when the volume is unmuted
+    }
+}
+
+// handleVolumeRangeSlider
+const handleVolumeRangeSlider = (e)=>{
+    video.volume = e.target.value;
+    if(video.volume === 0){
+        turnOffVolumeButton.style.display = "block";
+    }
+    else{
+        turnOffVolumeButton.style.display = "none";
+    }
+}
+
+// control visibility
+const makeControlsVisible = () => {
+    mainControlsWrapper.classList.remove("active");
+    mainPlayPauseButton.classList.remove("active");
+    clearTimeout(timeoutId); // clear the timeout when mouse enters
+}
+
+const makeControlsInvisible = () => {
+    if (isClicked) { // only hide controls if video is playing
+        timeoutId = setTimeout(() => {
+            mainControlsWrapper.classList.add("active");
+            mainPlayPauseButton.classList.add("active");
+        }, 1500);
+    }
+}
+
+// main Function 
+const togglePlayPause = () => {
+    isClicked = !isClicked; // toggle the boolean state onclick
+    if (isClicked) {
+        playButton.innerHTML = `<svg height="100%" viewBox="0 0 36 36" width="100%"><path d="M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z" id="ytp-id-117"></path></svg>`;
+        mainPlayPauseButton.innerHTML = playButton.innerHTML;
+        video.play();
+        video.classList.remove("filter"); // if video is playing the remove brightness of video
+        makeControlsInvisible(); // hide controls after 1s
+    } else {
+        playButton.innerHTML = `<svg height="100%" viewBox="0 0 36 36" width="100%"><path d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z" id="ytp-id-41"></path></svg>`;
+        mainPlayPauseButton.innerHTML = playButton.innerHTML;
+        video.pause();
+        video.classList.add("filter"); // if vide is paused then make brightness of video a bit low
+        makeControlsVisible(); // show controls when video is paused
+    }
+};
+
+// Handle controls visibility on mouseEvents
+mainControlsWrapper.addEventListener("mouseenter", ()=>{
+    makeControlsVisible(); // show controls when video is paused
+})
+mainControlsWrapper.addEventListener("mouseleave", ()=>{
+    makeControlsInvisible(); // hide controls after 1s
+})
+
+// playBackSpeed 
+playBackSpeedOptions.querySelectorAll("li").forEach(option =>{
+    option.addEventListener("click", ()=>{ 
+        video.playbackRate = option.dataset.speed; // passing option dataset value as video playback value
+        playBackSpeedOptions.querySelector(".checked").classList.remove("checked");
+        option.classList.add("checked")
+    })
+})
+
+// If video gets completed then it should handle the playPause buttons
+const handleVideoCompletion = ()=>{
+    togglePlayPause();
+}
+
+// viewFullScreen on doubleClick
+video.addEventListener("dblclick", ()=>{
+    fullScreen()
+})
+
+//  skip backward to 5s
+skipBackward.addEventListener("click", ()=>{
+    video.currentTime -= 5;
+})
+// skip forward to 5s
+skipForward.addEventListener("click", ()=>{
+    video.currentTime += 5;
+})
+
+// events
+volumeButton.addEventListener("click", handleVolumeButton);
+playButton.addEventListener("click", togglePlayPause);
+video.addEventListener("mouseenter", makeControlsVisible);
+video.addEventListener("mouseleave", makeControlsInvisible);
+video.addEventListener("ended", handleVideoCompletion);
+volumeRangeSlider.addEventListener("input", handleVolumeRangeSlider);
+viewFullScreen.addEventListener("click", fullScreen); // view fullScreen
+
+
+// Responsive => adjust it when get free time
+
+// const mediaQuery = window.matchMedia("(max-width: 767px)");
+
+// mediaQuery.addEventListener("change", (mediaQuery)=>{
+//     if(mediaQuery.matches){
+        
+//     }
+// })
+</script>
+</body>
+</html>
