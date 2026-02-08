@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Permanent+Marker&display=swap" rel="stylesheet">    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Custom Video Player</title>
@@ -23,6 +27,21 @@ html, body{
 }
 a {
     text-decoration: none;
+}
+label{
+/**    .vjs-watermark {**/
+        color: #fff;
+         /**margin: auto;**/
+    position: absolute;
+    display: inline;
+         font-family: Permanent Marker;
+         font-weight: 400;
+        flex: 1;
+    z-index: 2000;
+        margin-left: 15px;
+         opacity: 70%;
+        margin-top: 10px;
+         
 }
 body{
     display: flex;
@@ -373,7 +392,11 @@ body{
 
         </div>
 
-        <video class="bedar-video " src="" type="video/mp4"></video>
+        <div class="L">       <div class="a"></div>     <label>Chatkaro</label>
+        <video class="bedar-video " src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+        <div class="b"></div>
+        </div>
 
     </div>
     <script>
