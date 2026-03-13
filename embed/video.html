@@ -488,6 +488,11 @@ const fullScreen = () => {
         document.documentElement.webkitRequestFullscreen();
       } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
         document.documentElement.msRequestFullscreen();
+if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(function(error) {
+            console.log("Orientation lock blocked: ", error);
+        });
+    }
       }
     } else {
       if (document.exitFullscreen) {
@@ -499,6 +504,10 @@ const fullScreen = () => {
         document.webkitExitFullscreen();
       } else if (document.msExitFullscreen) { /* IE/Edge */
         document.msExitFullscreen();
+if (screen.orientation && screen.orientation.unlock) {
+        screen.orientation.unlock();
+    }
+
       }
     }
   }  
