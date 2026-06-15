@@ -1717,19 +1717,5 @@ function appendBubbleToCanvas(data) {
     `;
     messageCanvas.appendChild(containerDiv); messageCanvas.scrollTop = messageCanvas.scrollHeight;
 }
-console.log("Current Permission Status:", Notification.permission);
-
-if (Notification.permission === "granted") {
-    new Notification("Debug Test", { body: "If you see this, Chrome is working fine!" });
-} else if (Notification.permission !== "denied") {
-    Notification.requestPermission().then(permission => {
-        console.log("New Permission Status:", permission);
-        if (permission === "granted") {
-            new Notification("Debug Test", { body: "Permission granted just now!" });
-        }
-    });
-} else {
-    console.error("Notifications are blocked by Chrome site settings or the file:// protocol constraint.");
-}
 
 </script>
