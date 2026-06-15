@@ -4,279 +4,802 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure WhatsApp Web Client</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#eae6df] h-screen flex justify-center items-center font-sans antialiased overflow-hidden">
+<body>
 
-    <div id="auth-screen" class="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center p-4 z-50 transition-opacity duration-300 hidden">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full shadow-2xl">
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">Access Portal</h2>
-            <p class="text-sm text-gray-500 mb-4">Secure your communications tunnel with a unique User ID and password.</p>
+    <div id="auth-screen" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2>Access Portal</h2>
+            <p class="modal-subtitle">Secure your communications tunnel with a unique User ID and password.</p>
             
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Your Account ID</label>
-                    <input type="text" id="auth-userid-input" placeholder="e.g., AvIndia_77" class="w-full p-2.5 bg-white text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 tracking-wider">
+            <div class="form-group-stack">
+                <div class="form-control">
+                    <label>Your Account ID</label>
+                    <input type="text" id="auth-userid-input" placeholder="e.g., AvIndia_77" class="custom-input">
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Password</label>
-                    <input type="password" id="auth-password-input" placeholder="••••••••" class="w-full p-2.5 bg-white text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <div class="form-control">
+                    <label>Password</label>
+                    <input type="password" id="auth-password-input" placeholder="••••••••" class="custom-input">
                 </div>
-                <div class="flex gap-3 pt-2">
-                    <button id="btn-login" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 rounded-lg text-sm transition shadow-md">Log In</button>
-                    <button id="btn-register" class="flex-1 bg-white border border-teal-600 text-teal-600 hover:bg-teal-50 font-semibold py-2.5 rounded-lg text-sm transition">Create ID</button>
+                <div class="button-row">
+                    <button id="btn-login" class="btn btn-primary">Log In</button>
+                    <button id="btn-register" class="btn btn-secondary">Create ID</button>
                 </div>
-                <p id="auth-error" class="text-xs text-red-500 font-medium text-center hidden mt-2"></p>
+                <p id="auth-error" class="error-text hidden"></p>
             </div>
         </div>
     </div>
 
-    <div id="new-chat-modal" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center p-4 z-50 hidden transition-opacity duration-200">
-        <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-2xl">
-            <h3 class="text-lg font-bold text-gray-800 mb-1">Start New Conversation</h3>
-            <p class="text-xs text-gray-500 mb-4">Enter a user's exact account ID node to open an isolated chat channel.</p>
+    <div id="new-chat-modal" class="modal-overlay hidden">
+        <div class="modal-card card-sm">
+            <h3>Start New Conversation</h3>
+            <p class="modal-subtitle">Enter a user's exact account ID node to open an isolated chat channel.</p>
             
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-0.5">Target Account ID</label>
-                    <input type="text" id="target-userid-search" placeholder="e.g., avindia" class="w-full p-2 bg-white text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <div class="form-group-stack">
+                <div class="form-control">
+                    <label>Target Account ID</label>
+                    <input type="text" id="target-userid-search" placeholder="e.g., avindia" class="custom-input">
                 </div>
-                <p id="new-chat-error" class="text-xs text-red-500 font-medium hidden"></p>
-                <div class="flex gap-2 pt-2">
-                    <button id="btn-close-new-chat" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-lg text-xs transition">Cancel</button>
-                    <button id="btn-submit-new-chat" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-lg text-xs transition shadow-sm">Initialize Chat</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="profile-modal" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center p-4 z-50 hidden transition-opacity duration-200">
-        <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-2xl">
-            <h3 class="text-lg font-bold text-gray-800 mb-1">Edit Account Profile</h3>
-            <p class="text-xs text-gray-500 mb-4">Update your user identity records across shared indexes.</p>
-            
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-0.5">Your Name</label>
-                    <input type="text" id="edit-display-name" placeholder="e.g., John Doe" maxlength="30" class="w-full p-2 bg-white text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-0.5">Display Avatar Image URL</label>
-                    <input type="url" id="edit-avatar-url" placeholder="https://example.com/pic.png" class="w-full p-2 bg-white text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-0.5">Custom Status Subtitle</label>
-                    <input type="text" id="edit-status" placeholder="Available" maxlength="40" class="w-full p-2 bg-white text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
-                </div>
-                <div class="flex gap-2 pt-3">
-                    <button id="btn-close-profile" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-lg text-xs transition">Cancel</button>
-                    <button id="btn-save-profile" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-lg text-xs transition shadow-sm">Save Changes</button>
+                <p id="new-chat-error" class="error-text hidden"></p>
+                <div class="button-row gap-2">
+                    <button id="btn-close-new-chat" class="btn btn-muted">Cancel</button>
+                    <button id="btn-submit-new-chat" class="btn btn-primary">Initialize Chat</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="topic-modal" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center p-4 z-50 hidden transition-opacity duration-200">
-        <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-2xl">
-            <h3 class="text-lg font-bold text-gray-800 mb-1">Launch New Community</h3>
-            <p class="text-xs text-gray-500 mb-4">Create an open public forum for global group discussions.</p>
+    <div id="profile-modal" class="modal-overlay hidden">
+        <div class="modal-card card-sm">
+            <h3>Edit Account Profile</h3>
+            <p class="modal-subtitle">Update your user identity records across shared indexes.</p>
             
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-0.5">Topic Icon Emoji</label>
-                    <input type="text" id="new-topic-emoji" placeholder="🚀" maxlength="2" class="w-12 text-center p-2 bg-white text-black border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <div class="form-group-stack">
+                <div class="form-control">
+                    <label>Your Name</label>
+                    <input type="text" id="edit-display-name" placeholder="e.g., John Doe" maxlength="30" class="custom-input">
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-0.5">Topic Name</label>
-                    <input type="text" id="new-topic-name" placeholder="e.g., Developers" maxlength="25" class="w-full p-2 bg-white text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <div class="form-control">
+                    <label>Display Avatar Image URL</label>
+                    <input type="url" id="edit-avatar-url" placeholder="https://example.com/pic.png" class="custom-input">
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-0.5">Description</label>
-                    <input type="text" id="new-topic-desc" placeholder="Global discussion channel" maxlength="50" class="w-full p-2 bg-white text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <div class="form-control">
+                    <label>Custom Status Subtitle</label>
+                    <input type="text" id="edit-status" placeholder="Available" maxlength="40" class="custom-input">
                 </div>
-                <div class="flex gap-2 pt-3">
-                    <button id="btn-close-modal" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-lg text-xs transition">Cancel</button>
-                    <button id="btn-submit-topic" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-lg text-xs transition shadow-sm">Create Forum</button>
+                <div class="form-control checkbox-control">
+                    <input type="checkbox" id="edit-is-public" class="custom-checkbox">
+                    <label for="edit-is-public" class="checkbox-label">List profile in public explore directory</label>
+                </div>
+                <div class="button-row gap-2">
+                    <button id="btn-close-profile" class="btn btn-muted">Cancel</button>
+                    <button id="btn-save-profile" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="image-share-modal" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center p-4 z-50 hidden transition-opacity duration-200">
-        <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-2xl">
-            <h3 class="text-lg font-bold text-gray-800 mb-1">Transmit Image File Link</h3>
-            <p class="text-xs text-gray-500 mb-4">Paste a hosted image URL path to render directly inside the canvas stream.</p>
+    <div id="topic-modal" class="modal-overlay hidden">
+        <div class="modal-card card-sm">
+            <h3>Deploy Community Room</h3>
+            <p class="modal-subtitle">Launch a group messaging tunnel across the database workspace.</p>
             
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-0.5">Image Web URL Address</label>
-                    <input type="url" id="share-img-url" placeholder="https://example.com/image.jpg" class="w-full p-2 bg-white text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <div class="form-group-stack">
+                <div class="form-control">
+                    <label>Group Icon Emoji</label>
+                    <input type="text" id="new-topic-emoji" placeholder="👥" maxlength="2" class="custom-input emoji-input" value="👥">
                 </div>
-                <div class="flex gap-2 pt-3">
-                    <button id="btn-close-img-modal" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-lg text-xs transition">Cancel</button>
-                    <button id="btn-submit-img-msg" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-lg text-xs transition shadow-sm">Send Image</button>
+                <div class="form-control">
+                    <label>Group Name</label>
+                    <input type="text" id="new-topic-name" placeholder="e.g., Core Developers Room" maxlength="25" class="custom-input" required>
+                </div>
+                <div class="form-control">
+                    <label>Group Description</label>
+                    <input type="text" id="new-topic-desc" placeholder="Room pipeline description..." maxlength="50" class="custom-input">
+                </div>
+                
+                <div class="form-control checkbox-control" style="background-color: #f0fdfa; padding: 10px; border-radius: 6px; border: 1px dashed #0d9488;">
+                    <input type="checkbox" id="new-topic-is-public" class="custom-checkbox">
+                    <label for="new-topic-is-public" class="checkbox-label" style="font-weight: 700 !important; color: #0f766e !important;">
+                        Make group accessible to everyone (Public Room)
+                    </label>
+                </div>
+
+                <div class="button-row gap-2">
+                    <button id="btn-close-modal" class="btn btn-muted">Cancel</button>
+                    <button id="btn-submit-topic" class="btn btn-primary">Create Room</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="w-screen h-screen max-w-[1600px] xl:h-[95vh] xl:rounded-lg shadow-2xl flex bg-[#f0f2f5] overflow-hidden fixed inset-0">
+    <div id="image-share-modal" class="modal-overlay hidden">
+        <div class="modal-card card-sm">
+            <h3>Transmit Image File Link</h3>
+            <p class="modal-subtitle">Paste a hosted image URL path to render directly inside the canvas stream.</p>
+            
+            <div class="form-group-stack">
+                <div class="form-control">
+                    <label>Image Web URL Address</label>
+                    <input type="url" id="share-img-url" placeholder="https://example.com/image.jpg" class="custom-input">
+                </div>
+                <div class="button-row gap-2">
+                    <button id="btn-close-img-modal" class="btn btn-muted">Cancel</button>
+                    <button id="btn-submit-img-msg" class="btn btn-primary">Send Image</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="group-info-modal" class="modal-overlay hidden">
+        <div class="modal-card card-sm">
+            <h3 id="info-group-title">Community Details</h3>
+            <p id="info-group-desc" class="modal-subtitle">Loading description...</p>
+            
+            <div class="form-group-stack">
+                <div class="form-control" id="group-admin-tools">
+                    <label>Add Member Node</label>
+                    <div class="search-input-wrapper mb-2" style="border: 1px solid #e5e7eb;">
+                        <input type="text" id="group-add-member-id" placeholder="Enter Target User ID...">
+                        <button id="btn-group-add-member" class="btn btn-primary style-btn-sm">Add Node</button>
+                    </div>
+                    <p id="group-add-member-error" class="error-text hidden" style="text-align: left; margin-bottom: 8px;"></p>
+                </div>
+                <div class="form-control">
+                    <label id="info-participant-count">Active Nodes (0)</label>
+                    <div class="group-info-scroll-list" id="info-participants-container">
+                        </div>
+                </div>
+                <div class="button-row">
+                    <button id="btn-close-group-info" class="btn btn-muted">Close View</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
         
-        <aside id="sidebar-panel" class="w-full md:w-80 lg:w-96 border-r border-[#e9edef] bg-white flex flex-col flex-shrink-0 h-full transition-all duration-200">
+        <aside id="sidebar-panel" class="sidebar">
             
-            <header class="h-[60px] bg-[#f0f2f5] px-4 flex items-center justify-between border-b border-[#e9edef] flex-shrink-0">
-                <div class="flex items-center gap-3 min-w-0 cursor-pointer flex-1" id="btn-trigger-profile-edit">
-                    <div class="relative flex-shrink-0">
-                        <div id="my-avatar-container" class="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold shadow-inner overflow-hidden uppercase">
+            <header class="panel-header">
+                <div class="header-user-profile" id="btn-trigger-profile-edit">
+                    <div class="avatar-wrapper">
+                        <div id="my-avatar-container" class="avatar-circle font-bold shadow-inner">
                             <span id="my-avatar-letter">?</span>
                         </div>
-                        <span id="network-status" class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-gray-400 ring-2 ring-white"></span>
+                        <span id="network-status" class="status-dot-marker offline"></span>
                     </div>
-                    <div class="min-w-0 flex-1">
-                        <div class="flex items-center gap-1.5 min-w-0">
-                            <h4 class="font-bold text-gray-800 text-sm truncate" id="my-display-id">Loading...</h4>
-                            <span id="my-verified-badge" class="hidden flex-shrink-0 w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 flex items-center justify-center text-[9px] text-white font-black shadow-sm select-none" title="Verified Node">✓</span>
+                    <div class="identity-info-block min-w-0">
+                        <div class="identity-title-row">
+                            <h4 id="my-display-id" class="truncate">Loading...</h4>
+                            <span id="my-verified-badge" class="gradient-tick hidden" title="Verified Node">✓</span>
                         </div>
-                        <button id="btn-logout" class="text-[11px] text-red-500 hover:underline font-semibold block stop-prop">Log Out</button>
+                        <button id="btn-logout" class="link-btn-danger stop-prop">Log Out</button>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-1 pl-2 flex-shrink-0 stop-prop">
-                    <button id="btn-trigger-new-chat" class="p-2 text-gray-600 hover:bg-gray-200 rounded-full transition cursor-pointer" title="New Chat Contact">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <div class="header-actions stop-prop">
+                    <button id="btn-trigger-new-chat" class="icon-btn" title="New Chat Contact">
+                        <svg class="svg-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                     </button>
                 </div>
             </header>
 
-            <div class="p-2 bg-[#f0f2f5] border-b border-[#e9edef] flex-shrink-0">
-                <div class="bg-white flex items-center rounded-lg px-3 py-1.5 shadow-sm">
-                    <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" id="sidebar-search" placeholder="Search users or communities..." class="bg-transparent w-full text-sm focus:outline-none text-gray-700 placeholder-gray-400">
+            <div class="search-bar-container">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" id="sidebar-search" placeholder="Search entries and directories...">
                 </div>
             </div>
 
-            <div class="flex items-center border-b border-[#e9edef] bg-white pr-2 flex-shrink-0">
-                <div class="flex-1 flex text-sm font-medium text-gray-500">
-                    <button id="tab-direct" class="flex-1 py-3 text-center border-b-2 border-teal-600 text-teal-600 font-semibold cursor-pointer transition-all">💬 Direct</button>
-                    <button id="tab-community" class="flex-1 py-3 text-center border-b-2 border-transparent hover:text-gray-700 font-semibold cursor-pointer transition-all">👥 Communities</button>
+            <div class="navigation-tabs-bar">
+                <div class="tabs-flex-wrapper">
+                    <button id="tab-direct" class="tab-btn active">💬 Direct</button>
+                    <button id="tab-community" class="tab-btn">👥 Groups</button>
+                    <button id="tab-explore" class="tab-btn">🌐 Explore</button>
                 </div>
-                <button id="btn-trigger-topic-modal" class="hidden p-1.5 rounded-full hover:bg-gray-100 text-teal-600 transition cursor-pointer">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                <button id="btn-trigger-topic-modal" class="icon-btn-accent hidden" title="Deploy New Space">
+                    <svg class="svg-icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
                 </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto bg-white" id="channels-container"></div>
+            <div class="channels-scroll-list" id="channels-container"></div>
         </aside>
 
-        <section id="chat-panel" class="hidden md:flex flex-1 flex-col h-full max-h-full bg-[#efeae2] relative overflow-hidden transition-all duration-200">
+        <section id="chat-panel" class="chat-viewport hidden-mobile">
             
-            <div id="empty-state" class="absolute inset-0 bg-[#f8f9fa] hidden md:flex flex-col justify-center items-center text-center p-8 z-10">
-                <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+            <div id="empty-state" class="canvas-empty-state">
+                <div class="empty-icon-circle">
+                    <svg class="empty-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                 </div>
-                <h2 class="text-xl font-light text-gray-700 mb-2">End-to-End Chat Matrix</h2>
-                <p class="text-sm text-gray-500 max-w-sm">Select an active encryption node or use the message button to initialize an outbound session.</p>
+                <h2>End-to-End Chat Matrix</h2>
+                <p>Select an active communication node or use the tab menus to initialize public/private sessions.</p>
             </div>
 
-            <header class="h-[60px] bg-[#f0f2f5] px-3 md:px-4 flex items-center justify-between border-b border-[#e9edef] z-10 shadow-sm flex-shrink-0">
-                <div class="flex items-center gap-2 md:gap-3 min-w-0">
-                    <button id="mobile-back-btn" class="block md:hidden p-1 mr-1 hover:bg-gray-200 rounded-full text-gray-600 transition">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            <header class="panel-header chat-header">
+                <div class="active-chat-profile-meta" id="active-chat-header-banner" style="cursor: pointer;">
+                    <button id="mobile-back-btn" class="icon-btn back-btn-mobile">
+                        <svg class="svg-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
-                    <div id="active-avatar-container" class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-semibold flex-shrink-0 overflow-hidden uppercase">
+                    <div id="active-avatar-container" class="avatar-circle active-target font-semibold">
                         <span id="active-avatar">#</span>
                     </div>
-                    <div class="min-w-0">
-                        <div class="flex items-center gap-1.5 min-w-0">
-                            <h3 id="active-title" class="font-medium text-gray-800 text-sm md:text-base truncate">Target Name</h3>
-                            <span id="active-verified-badge" class="hidden flex-shrink-0 w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 flex items-center justify-center text-[9px] text-white font-black shadow-sm select-none">✓</span>
+                    <div class="identity-info-block min-w-0">
+                        <div class="identity-title-row">
+                            <h3 id="active-title" class="truncate">Target Name</h3>
+                            <span id="active-verified-badge" class="gradient-tick hidden">✓</span>
                         </div>
-                        <p id="active-subtitle" class="text-xs text-gray-500 truncate transition-colors duration-200">Private Secure Node</p>
+                        <p id="active-subtitle" class="truncate">Loading channel descriptor record...</p>
                     </div>
                 </div>
             </header>
 
-            <main id="message-canvas" class="flex-1 p-4 md:p-6 overflow-y-auto space-y-3 bg-repeat opacity-95 min-h-0 chat-wallpaper">
+            <main id="message-canvas" class="message-stream-canvas chat-wallpaper">
                 </main>
 
-            <footer class="bg-[#f0f2f5] px-3 py-3 border-t border-[#e9edef] flex items-center gap-2 md:gap-3 flex-shrink-0 z-20 sticky bottom-0 w-full">
-                <button type="button" id="btn-trigger-image-modal" class="p-2 text-gray-500 hover:text-teal-600 hover:bg-gray-200 rounded-full transition flex-shrink-0 cursor-pointer" title="Attach Image URL">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <footer class="messaging-input-footer">
+                <button type="button" id="btn-trigger-image-modal" class="icon-btn input-action-btn" title="Attach Image URL">
+                    <svg class="svg-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 </button>
                 
-                <form id="messaging-form" class="flex-1 flex items-center gap-2 md:gap-3">
-                    <input type="text" id="message-payload" placeholder="Type a message..." class="flex-1 py-2 px-4 bg-white text-black border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-sm" autocomplete="off" required>
-                    <button type="submit" class="p-2 bg-teal-600 hover:bg-teal-700 text-white rounded-full transition shadow-md flex items-center justify-center flex-shrink-0 cursor-pointer">
-                        <svg class="w-5 h-5 transform rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+                <form id="messaging-form" class="messaging-form-layout">
+                    <input type="text" id="message-payload" placeholder="Type a message..." autocomplete="off" required class="message-text-input">
+                    <button type="submit" class="submit-msg-btn">
+                        <svg class="svg-icon rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
                     </button>
                 </form>
             </footer>
         </section>
     </div>
+    
+    <div id="inapp-alert-toast-container" class="toast-overlay-container stop-prop"></div>
 
     <script type="module" src="app.js"></script>
 </body>
 </html>
 <style>
-/* Custom Scrollbars */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+/* ================= GLOBAL DEFAULTS & VIEWPORT LATCHES ================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-/* Force Chrome Autofill Styling */
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus {
+html, body {
+    height: 100% !important;
+    width: 100% !important;
+    position: fixed;
+    overflow: hidden;
+    background-color: #eae6df;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+.app-container {
+    width: 100vw;
+    height: 100vh !important;
+    height: -webkit-fill-available !important;
+    max-height: 100% !important;
+    display: flex;
+    flex-direction: row;
+    background-color: #f0f2f5;
+    overflow: hidden;
+    position: fixed;
+    inset: 0;
+}
+
+@media (min-width: 1280px) {
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .app-container {
+        position: relative;
+        width: 100%;
+        max-width: 1600px;
+        height: 95vh !important;
+        border-radius: 8px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+}
+
+/* ================= COMPONENT APP SIDEBAR ================= */
+.sidebar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border-right: 1px solid #e9edef;
+    flex-shrink: 0;
+}
+
+@media (min-width: 768px) { .sidebar { width: 320px; } }
+@media (min-width: 1024px) { .sidebar { width: 384px; } }
+
+.panel-header {
+    height: 60px;
+    background-color: #f0f2f5;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e9edef;
+    flex-shrink: 0;
+}
+
+.header-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+    cursor: pointer;
+}
+
+.avatar-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0d9488;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    overflow: hidden;
+}
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.avatar-circle.active-target { background-color: #10b981; }
+
+.status-dot-marker {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+}
+.status-dot-marker.online { background-color: #10b981; }
+.status-dot-marker.offline { background-color: #f59e0b; }
+.status-dot-marker.pulse { animation: pulseAnim 1.8s infinite; }
+
+@keyframes pulseAnim {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.identity-info-block { min-width: 0; flex: 1; }
+.identity-title-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.identity-title-row h4 { font-size: 14px; color: #1f2937; font-weight: 700; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.gradient-tick {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(to right, #f59e0b, #f97316, #facc15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    font-size: 9px;
+    color: #ffffff;
+    font-weight: 900;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    user-select: none;
+}
+
+.link-btn-danger {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    display: block;
+    text-align: left;
+}
+.link-btn-danger:hover { text-decoration: underline; }
+.header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; padding-left: 8px; }
+
+/* ================= ASIDE SEARCH BAR ELEMENTS ================= */
+.search-bar-container { padding: 8px; background-color: #f0f2f5; border-bottom: 1px solid #e9edef; flex-shrink: 0; }
+.search-input-wrapper { background-color: #ffffff; display: flex; align-items: center; border-radius: 8px; padding: 6px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.search-icon { width: 16px; height: 16px; color: #9ca3af; margin-right: 8px; flex-shrink: 0; }
+.search-input-wrapper input { background: transparent; border: none; width: 100%; font-size: 14px; color: #374151; outline: none; }
+.search-input-wrapper input::placeholder { color: #9ca3af; }
+
+/* ================= CHANNELS DIRECTORY STREAM ================= */
+.navigation-tabs-bar { display: flex; align-items: center; border-bottom: 1px solid #e9edef; background-color: #ffffff; padding-right: 8px; flex-shrink: 0; }
+.tabs-flex-wrapper { flex: 1; display: flex; }
+.tab-btn { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; font-weight: 600; color: #6b7280; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+.tab-btn.active { border-bottom-color: #0d9488; color: #0d9488; }
+.tab-btn:not(.active):hover { color: #374151; }
+
+.channels-scroll-list { flex: 1; overflow-y: auto; background-color: #ffffff; }
+.directory-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f0f2f5; transition: background-color 0.15s; }
+.directory-row.selected { background-color: #f0f2f5; }
+.directory-row:not(.selected):hover { background-color: #f5f6f6; }
+
+.directory-group-avatar { width: 48px; height: 48px; border-radius: 50%; background-color: #4f46e5; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 18px; flex-shrink: 0; }
+.directory-row-body { flex: 1; min-width: 0; }
+.directory-row-body h4 { font-size: 14px; color: #111827; font-weight: 500; }
+.directory-row-body p { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+.empty-directory-fallback { padding: 24px; text-align: center; }
+.empty-directory-fallback p { font-size: 12px; color: #9ca3af; }
+.empty-directory-fallback p.highlight-hint { color: #0d9488; font-weight: 500; margin-top: 8px; }
+
+/* ================= CHAT STREAM VIEWPORT CONTAINER ================= */
+.chat-viewport {
+    background-color: #efeae2;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    flex: 1 1 0%;
+}
+
+.chat-header { background-color: #f0f2f5; z-index: 10; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.active-chat-profile-meta { display: flex; align-items: center; gap: 12px; min-width: 0; width: 100%; }
+.active-chat-profile-meta h3 { font-size: 15px; color: #1f2937; font-weight: 500; }
+.active-chat-profile-meta p { font-size: 12px; color: #6b7280; }
+.active-chat-profile-meta p.typing-state { color: #059669; font-weight: 500; animation: typingPulse 1.8s infinite; }
+
+@keyframes typingPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+.message-stream-canvas {
+    flex: 1 1 0% !important;
+    min-height: 0 !important;
+    padding: 16px;
+    overflow-y: auto !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0.95;
+}
+@media (min-width: 768px) { .message-stream-canvas { padding: 24px; } }
+
+/* ================= MESSAGING BUBBLE LOGIC LAYOUTS ================= */
+.bubble-row-layout { display: flex; width: 100%; }
+.bubble-row-layout.me { justify-content: flex-end; }
+.bubble-row-layout.them { justify-content: flex-start; }
+
+.chat-bubble-card { max-width: 85%; border-radius: 8px; padding: 6px 12px; box-shadow: 0 1px 1px rgba(0,0,0,0.08); position: relative; font-size: 14px; color: #111b21; }
+@media (min-width: 768px) { .chat-bubble-card { max-width: 70%; } }
+
+.chat-bubble-card.me { background-color: #d9fdd3; border-top-right-radius: 0; }
+.chat-bubble-card.them { background-color: #ffffff; border-top-left-radius: 0; }
+
+.bubble-group-sender-header { font-size: 11px; font-weight: 700; color: #4f46e5; margin-bottom: 2px; text-transform: uppercase; user-select: none; }
+.bubble-meta-flex-wrapper { display: flex; flex-direction: column; gap: 4px; }
+.bubble-text-node { line-height: 1.5; word-break: break-word; }
+.bubble-timestamp-label { font-size: 10px; color: #9ca3af; user-select: none; align-self: flex-end; margin-top: 2px; }
+
+.bubble-image-container { margin-top: 4px; max-width: 100%; overflow: hidden; border-radius: 6px; border: 1px solid #e5e7eb; background-color: #000000; }
+.bubble-image-container img { width: 100%; max-height: 256px; object-fit: contain; display: block; cursor: pointer; }
+
+/* ================= STATIC MESSAGING INPUT FOOTER ================= */
+.messaging-input-footer {
+    background-color: #f0f2f5;
+    padding: 12px;
+    border-top: 1px solid #e9edef;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0 !important;
+    height: auto !important;
+    min-height: 60px !important;
+    box-sizing: border-box !important;
+    z-index: 20;
+    position: relative;
+}
+
+.messaging-form-layout { flex: 1; display: flex; align-items: center; gap: 12px; }
+.message-text-input { flex: 1; padding: 8px 16px; background-color: #ffffff; color: #000000; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none; box-shadow: 0 1px 1px rgba(0,0,0,0.03); }
+.message-text-input::placeholder { color: #6b7280; }
+.message-text-input:focus { border-color: #0d9488; }
+
+.submit-msg-btn { width: 36px; height: 36px; border-radius: 50%; background-color: #0d9488; color: #ffffff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.15s; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.submit-msg-btn:hover { background-color: #0f766e; }
+
+/* ================= SYSTEM BLANK STATE CANVAS ================= */
+.canvas-empty-state { position: absolute; inset: 0; background-color: #f8f9fa; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 32px; z-index: 10; }
+.empty-icon-circle { width: 96px; height: 96px; border-radius: 50%; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.empty-svg { width: 48px; height: 48px; color: #9ca3af; }
+.canvas-empty-state h2 { font-size: 20px; font-weight: 300; color: #374151; margin-bottom: 8px; }
+.canvas-empty-state p { font-size: 14px; color: #6b7280; max-width: 384px; }
+
+/* ================= MODAL LIGHTBOX LAYOUT INTERFACES ================= */
+.modal-overlay { position: fixed; inset: 0; background-color: rgba(17, 24, 39, 0.7); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; transition: opacity 0.3s ease; }
+.modal-card { background-color: #ffffff; border-radius: 8px; padding: 24px; width: 100%; max-width: 448px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+.modal-card.card-sm { max-width: 384px; }
+.modal-card h2 { font-size: 24px; font-weight: 700; color: #1f2937; margin-bottom: 8px; }
+.modal-card h3 { font-size: 18px; font-weight: 700; color: #1f2937; margin-bottom: 4px; }
+.modal-subtitle { font-size: 14px; color: #6b7280; margin-bottom: 16px; }
+
+.form-group-stack { display: flex; flex-direction: column; gap: 16px; }
+.form-control { display: flex; flex-direction: column; }
+.form-control label { font-size: 12px; font-weight: 700; color: #4b5563; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.05em; }
+.custom-input { width: 100%; padding: 10px; background-color: #ffffff; color: #000000; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none; }
+.custom-input:focus { border-color: #0d9488; box-shadow: 0 0 0 2px rgba(13,148,136,0.2); }
+.custom-input.emoji-input { width: 48px; text-align: center; font-size: 16px; }
+.button-row { display: flex; gap: 12px; margin-top: 8px; }
+.button-row.gap-2 { gap: 8px; }
+
+/* ================= BASIC ATOMIC BUTTON ELEMENTS ================= */
+.btn { flex: 1; border: none; border-radius: 8px; padding: 10px 0; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 0.15s; text-align: center; }
+.btn-primary { background-color: #0d9488; color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.btn-primary:hover { background-color: #0f766e; }
+.btn-secondary { background-color: #ffffff; border: 1px solid #0d9488; color: #0d9488; }
+.btn-secondary:hover { background-color: #f0fdfa; }
+.btn-muted { background-color: #f3f4f6; color: #374151; }
+.btn-muted:hover { background-color: #e5e7eb; }
+
+.icon-btn { background: none; border: none; padding: 8px; color: #6b7280; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.15s, color 0.15s; }
+.icon-btn:hover { background-color: #e5e7eb; color: #111827; }
+.icon-btn.input-action-btn:hover { color: #0d9488; background-color: #e5e7eb; }
+.icon-btn-accent { background: none; border: none; padding: 6px; border-radius: 50%; color: #0d9488; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.15s; }
+.icon-btn-accent:hover { background-color: #f3f4f6; }
+
+/* ================= HELPER UTILITIES MAPS ================= */
+.hidden { display: none !important; }
+.error-text { font-size: 12px; color: #ef4444; font-weight: 500; text-align: center; margin-top: 8px; }
+.svg-icon { width: 24px; height: 24px; }
+.svg-icon-sm { width: 20px; height: 20px; }
+.rotate-90 { transform: rotate(90deg); }
+
+.chat-link { color: #0284c7; text-decoration: underline; font-weight: 500; }
+.chat-link:hover { color: #0369a1; }
+.chat-phone { color: #0d9488; background-color: rgba(13, 148, 136, 0.08); padding: 0 4px; border-radius: 4px; font-weight: 500; }
+
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
     -webkit-text-fill-color: #111b21 !important;
     -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
-.chat-wallpaper {
-    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+@media (max-width: 767px) { .hidden-mobile { display: none !important; } .back-btn-mobile { display: block !important; margin-right: 4px; } }
+@media (min-width: 768px) { .back-btn-mobile { display: none !important; } }
+
+/* ================= TIMELINE STAMP SEPARATORS ================= */
+.timeline-divider-wrapper { display: flex; justify-content: center; align-items: center; width: 100%; margin: 16px 0 8px 0; user-select: none; }
+.timeline-badge-node { background-color: #ffffff; color: #54656f; font-size: 11px; font-weight: 500; padding: 6px 12px; border-radius: 7.5px; box-shadow: 0 1px 1px rgba(11,20,26,0.08); text-transform: uppercase; letter-spacing: 0.02em; }
+
+/* ================= GROUP PROFILE CONTEXT SUBTEXTS ================= */
+.group-meta-subtext { font-size: 12.5px !important; color: #667781 !important; font-weight: 400; }
+
+/* ================= GROUP DETAILS MODAL PANE ================= */
+.group-info-scroll-list { max-height: 240px; overflow-y: auto; margin-top: 12px; border: 1px solid #e9edef; border-radius: 6px; background-color: #f8f9fa; }
+.participant-member-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #f0f2f5; }
+.participant-member-row:last-child { border-bottom: none; }
+.participant-meta-block { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.participant-title-text { font-size: 13.5px; font-weight: 600; color: #111b21; }
+.admin-badge-pill { font-size: 10px; color: #00a884; background-color: #e6f7f3; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+
+.checkbox-control {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+.custom-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: #0d9488;
+    cursor: pointer;
+}
+.checkbox-label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    text-transform: none !important;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0 !important;
+}
+.style-btn-sm {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    flex: none !important;
+    border-radius: 6px !important;
+}
+.mb-2 {
+    margin-bottom: 8px;
 }
 
-/* Chrome Viewport Boundary Locks */
-html, body {
-    height: 100% !important;
-    width: 100% !important;
-    margin: 0;
-    padding: 0;
-    position: fixed;
-    overflow: hidden;
-    -webkit-text-size-adjust: 100%;
+/* ================= EXPLORE SUBSECTION DIVIDER DESIGN ================= */
+.explore-section-header {
+    background-color: #f8f9fa;
+    color: #0f766e;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 8px 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
 }
-
-footer {
-    box-sizing: border-box;
-    max-height: 80px;
-}
-
-/* Highlight Text Patterns */
-.chat-link {
-    color: #0284c7;
-    text-decoration: underline;
-    font-weight: 500;
-}
-.chat-link:hover {
+.explore-count-pill {
+    background-color: #e0f2fe;
     color: #0369a1;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 700;
 }
 
-.chat-phone {
-    color: #0d9488;
-    background-color: rgba(13, 148, 136, 0.08);
-    padding: 0px 4px;
-    border-radius: 4px;
+/* ================= PUBLIC CHAT DECORATOR CARDS ================= */
+.directory-row.global-lobby-card {
+    background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+    border-bottom: 1px dashed #0d9488;
+}
+.directory-row.global-lobby-card:hover {
+    background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+}
+.directory-row.public-group-card {
+    background-color: #ffffff;
+    border-left: 4px solid #0d9488;
+}
+.directory-row.public-group-card:hover {
+    background-color: #f0fdfa;
+}
+.global-lobby-badge {
+    background-color: #0d9488;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+.public-group-badge {
+    background-color: #0f766e;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+/* ================= SYSTEM NOTIFICATION & ALERTS OVERLAYS ================= */
+.toast-overlay-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 320px;
+    pointer-events: none;
+}
+
+.inapp-toast-card {
+    background-color: #ffffff;
+    border-left: 4px solid #0d9488;
+    padding: 12px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: auto;
+    cursor: pointer;
+    animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.inapp-toast-card:hover {
+    transform: translateY(-2px);
+}
+
+.toast-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #0d9488;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.toast-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.toast-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111b21;
+}
+
+.toast-text {
+    font-size: 12px;
+    color: #667781;
+    margin-top: 1px;
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* ================= SIDEBAR UNREAD COUNTER BADGES ================= */
+.unread-badge-pill {
+    background-color: #25d366; /* WhatsApp Green */
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.directory-row-right-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+/* Request Notification Banner Component */
+.system-permission-alert-banner {
+    background-color: #e0f2fe;
+    border-bottom: 1px solid #bae6fd;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.system-permission-alert-banner p {
+    font-size: 12.5px;
+    color: #0369a1;
     font-weight: 500;
 }
 
 </style>
-<script type="module">
+<script>
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, push, set, onChildAdded, onValue, off, get, child, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+// Firebase Configuration Block
 const config = {
     apiKey: "AIzaSyBs6DenfcMTCVTr3XRb8xSP_TlAF54i9CY",
     authDomain: "github-website1.firebaseapp.com",
@@ -291,8 +814,9 @@ const config = {
 const app = initializeApp(config);
 const database = getDatabase(app);
 
+// Application Memory State Tracker
 let state = {
-    currentTab: 'direct', 
+    currentTab: 'direct', // Modes: 'direct' | 'community' | 'explore'
     activeThreadId: null,      
     activeRoomPath: null,      
     activeThreadRef: null,
@@ -300,11 +824,15 @@ let state = {
     searchQuery: '',
     myUserId: localStorage.getItem('secure-chat-id') || null,
     registeredUsersMap: {},    
-    connectedChatsList: [],    // Explicit WhatsApp contact list
-    dynamicCommunitiesList: [] 
+    connectedChatsList: [],    
+    dynamicCommunitiesList: [], // Private groups user belongs to
+    globalPublicGroupsList: [], // Populated globally via public_groups node endpoint
+    lastRenderedDateString: null,
+    unreadCountersMap: {},     // Maps threadId -> unread message counts
+    activeListenersTracker: {} // Tracks paths that are actively monitored for message incoming pings
 };
 
-// UI DOM Form Access Elements
+// DOM Query Selectors Matrix
 const authScreen = document.getElementById('auth-screen');
 const authUserIdInput = document.getElementById('auth-userid-input');
 const authPasswordInput = document.getElementById('auth-password-input');
@@ -315,16 +843,15 @@ const authError = document.getElementById('auth-error');
 const myDisplayId = document.getElementById('my-display-id');
 const myVerifiedBadge = document.getElementById('my-verified-badge');
 const myAvatarContainer = document.getElementById('my-avatar-container');
-const myAvatarLetter = document.getElementById('my-avatar-letter');
 const btnLogout = document.getElementById('btn-logout');
 
 const tabDirectBtn = document.getElementById('tab-direct');
 const tabCommunityBtn = document.getElementById('tab-community');
+const tabExploreBtn = document.getElementById('tab-explore');
 const btnTriggerTopicModal = document.getElementById('btn-trigger-topic-modal');
 const sidebarSearch = document.getElementById('sidebar-search');
 const channelsContainer = document.getElementById('channels-container');
 
-// WhatsApp Start Chat Modal Elements
 const newChatModal = document.getElementById('new-chat-modal');
 const btnTriggerNewChat = document.getElementById('btn-trigger-new-chat');
 const targetUseridSearch = document.getElementById('target-userid-search');
@@ -332,24 +859,23 @@ const newChatError = document.getElementById('new-chat-error');
 const btnCloseNewChat = document.getElementById('btn-close-new-chat');
 const btnSubmitNewChat = document.getElementById('btn-submit-new-chat');
 
-// Profile Editing Modal Controls
 const profileModal = document.getElementById('profile-modal');
 const btnTriggerProfileEdit = document.getElementById('btn-trigger-profile-edit');
 const editDisplayName = document.getElementById('edit-display-name');
 const editAvatarUrl = document.getElementById('edit-avatar-url');
 const editStatus = document.getElementById('edit-status');
+const editIsPublic = document.getElementById('edit-is-public');
 const btnCloseProfile = document.getElementById('btn-close-profile');
 const btnSaveProfile = document.getElementById('btn-save-profile');
 
-// Community Creation Modal Links
 const topicModal = document.getElementById('topic-modal');
 const newTopicEmoji = document.getElementById('new-topic-emoji');
 const newTopicName = document.getElementById('new-topic-name');
 const newTopicDesc = document.getElementById('new-topic-desc');
+const newTopicIsPublic = document.getElementById('new-topic-is-public');
 const btnCloseModal = document.getElementById('btn-close-modal');
 const btnSubmitTopic = document.getElementById('btn-submit-topic');
 
-// Image Transmission Modal Controls
 const imageShareModal = document.getElementById('image-share-modal');
 const btnTriggerImageModal = document.getElementById('btn-trigger-image-modal');
 const shareImgUrl = document.getElementById('share-img-url');
@@ -357,6 +883,7 @@ const btnCloseImgModal = document.getElementById('btn-close-img-modal');
 const btnSubmitImgMsg = document.getElementById('btn-submit-img-msg');
 
 const emptyState = document.getElementById('empty-state');
+const activeChatHeaderBanner = document.getElementById('active-chat-header-banner');
 const activeAvatarContainer = document.getElementById('active-avatar-container');
 const activeAvatar = document.getElementById('active-avatar');
 const activeTitle = document.getElementById('active-title');
@@ -371,11 +898,26 @@ const sidebarPanel = document.getElementById('sidebar-panel');
 const chatPanel = document.getElementById('chat-panel');
 const mobileBackBtn = document.getElementById('mobile-back-btn');
 
-// Network Observer Engine
+const groupInfoModal = document.getElementById('group-info-modal');
+const infoGroupTitle = document.getElementById('info-group-title');
+const infoGroupDesc = document.getElementById('info-group-desc');
+const infoParticipantCount = document.getElementById('info-participant-count');
+const infoParticipantsContainer = document.getElementById('info-participants-container');
+const btnCloseGroupInfo = document.getElementById('btn-close-group-info');
+const groupAddMemberId = document.getElementById('group-add-member-id');
+const btnGroupAddMember = document.getElementById('btn-group-add-member');
+const groupAddMemberError = document.getElementById('group-add-member-error');
+const groupAdminTools = document.getElementById('group-admin-tools');
+
+const toastContainer = document.getElementById('inapp-alert-toast-container');
+
+// Connection Watcher
 onValue(ref(database, '.info/connected'), (snap) => {
-    networkStatus.className = snap.val() === true 
-        ? "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white"
-        : "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-amber-500 ring-2 ring-white animate-pulse";
+    if (snap.val() === true) {
+        networkStatus.className = "status-dot-marker online";
+    } else {
+        networkStatus.className = "status-dot-marker offline pulse";
+    }
 });
 
 if (state.myUserId) {
@@ -384,12 +926,11 @@ if (state.myUserId) {
     authScreen.classList.remove('hidden');
 }
 
-// Convert unique input strings to valid, path-safe lowercase database structural tokens
 function getSystemKey(inputString) {
     return inputString.trim().toLowerCase().replace(/[.#$/\[\]]/g, "_");
 }
 
-// Protected Login Validation Flow
+// User Verification Action Hooks
 btnLogin.addEventListener('click', async () => {
     const rawId = authUserIdInput.value.trim();
     const parsedKey = getSystemKey(rawId);
@@ -401,7 +942,7 @@ btnLogin.addEventListener('click', async () => {
     if (userSnapshot.exists()) {
         const userData = userSnapshot.val();
         if (userData.password === password) {
-            launchAppWorkspace(userData.userId); // Retain original case identifier string
+            launchAppWorkspace(userData.userId); 
         } else {
             showAuthError("Invalid account verification password.");
         }
@@ -410,7 +951,6 @@ btnLogin.addEventListener('click', async () => {
     }
 });
 
-// Protected Registration Setup Flow with Lower/Upper Case retention
 btnRegister.addEventListener('click', async () => {
     const rawId = authUserIdInput.value.trim(); 
     const parsedKey = getSystemKey(rawId);
@@ -424,11 +964,12 @@ btnRegister.addEventListener('click', async () => {
         showAuthError("This Account ID path is already taken.");
     } else {
         await set(ref(database, `users/${parsedKey}`), {
-            userId: rawId, // Store display value with formatting cases intact
+            userId: rawId, 
             password: password,
             name: "",
             status: "Available Link Node",
             avatarUrl: "",
+            isPublic: false,
             createdTimestamp: Date.now()
         });
         launchAppWorkspace(rawId);
@@ -449,66 +990,205 @@ function showAuthError(msg) {
     authError.classList.remove('hidden');
 }
 
-// Global Workspace Synchronization Engine Core
+// Web Notifications API Initialization
+function initWebNotificationPermissions() {
+    if ("Notification" in window && Notification.permission === "default") {
+        const promptBanner = document.createElement('div');
+        promptBanner.className = "system-permission-alert-banner";
+        promptBanner.innerHTML = `
+            <p>Enable system push notification desktop alerts for incoming chat blocks?</p>
+            <div style="display:flex; gap:8px;">
+                <button id="btn-grant-notif" class="btn btn-primary style-btn-sm" style="background-color:#0284c7;">Enable</button>
+                <button id="btn-deny-notif" class="btn btn-muted style-btn-sm">Later</button>
+            </div>
+        `;
+        document.body.insertBefore(promptBanner, document.body.firstChild);
+
+        document.getElementById('btn-grant-notif').addEventListener('click', () => {
+            Notification.requestPermission().then(() => promptBanner.remove());
+        });
+        document.getElementById('btn-deny-notif').addEventListener('click', () => promptBanner.remove());
+    }
+}
+
+// Global Inbound Message Notification Routing Strategy Interceptor
+function registerGlobalNotificationObserver(threadId, firebaseDbPath, fallbackObject) {
+    if (state.activeListenersTracker[threadId]) return; 
+    state.activeListenersTracker[threadId] = true;
+
+    let isInitialFetchPhase = true;
+    const observerRef = ref(database, firebaseDbPath);
+    
+    // Check baseline content counts first to skip loading historic unread logs on initial join
+    get(observerRef).then(() => { isInitialFetchPhase = false; });
+
+    onChildAdded(observerRef, (snapshot) => {
+        if (isInitialFetchPhase) return; 
+
+        const messageData = snapshot.val();
+        const senderSystemKey = getSystemKey(messageData.senderId || "");
+        const mySystemKey = getSystemKey(state.myUserId);
+
+        // Never notify or increment for messages sent by yourself
+        if (senderSystemKey === mySystemKey) return;
+
+        // Trigger notifications if message arrives from background channels
+        if (state.activeThreadId !== threadId) {
+            state.unreadCountersMap[threadId] = (state.unreadCountersMap[threadId] || 0) + 1;
+            renderChannelDirectory();
+            triggerAlertNotifications(threadId, messageData, fallbackObject);
+        }
+    });
+}
+
+function triggerAlertNotifications(threadId, msg, contextItem) {
+    const messagePreviewText = msg.type === "image" ? "📷 Sent an Image URL File" : msg.text;
+    
+    // 1. Web API Native Operating System Banner Push Notification
+    if ("Notification" in window && Notification.permission === "granted") {
+        const systemNotif = new Notification(msg.sender || "New Message", {
+            body: messagePreviewText,
+            icon: contextItem.avatarUrl || "https://cdn-icons-png.flaticon.com/512/134/134937.png",
+            tag: threadId 
+        });
+        systemNotif.onclick = () => {
+            window.focus();
+            navigateToConversationDirectly(threadId, contextItem);
+        };
+    }
+
+    // 2. Beautiful Floating Application In-App Alert Card UI Layer
+    const toastCard = document.createElement('div');
+    toastCard.className = "inapp-toast-card";
+    
+    let visualAvatar = `<div class="toast-avatar">${(msg.sender || "U").charAt(0).toUpperCase()}</div>`;
+    if (contextItem.avatarUrl) visualAvatar = `<div class="toast-avatar"><img src="${contextItem.avatarUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"/></div>`;
+    else if (contextItem.avatar && contextItem.isGroup) visualAvatar = `<div class="toast-avatar" style="background-color:#0f766e;">${contextItem.avatar}</div>`;
+
+    toastCard.innerHTML = `
+        ${visualAvatar}
+        <div class="toast-body">
+            <div class="toast-title">${msg.sender}</div>
+            <div class="toast-text truncate">${messagePreviewText}</div>
+        </div>
+    `;
+
+    toastCard.addEventListener('click', () => {
+        toastCard.remove();
+        navigateToConversationDirectly(threadId, contextItem);
+    });
+
+    toastContainer.appendChild(toastCard);
+    setTimeout(() => { if (toastCard.parentNode) toastCard.remove(); }, 4000);
+}
+
+function navigateToConversationDirectly(threadId, item) {
+    if (threadId === 'global_lobby') switchTab('explore');
+    else if (item.isPublicRoom) switchTab('explore');
+    else if (item.isGroup) switchTab('community');
+    else switchTab('direct');
+
+    selectConversation(item);
+}
+
+// App Initialization Engine
 function launchAppWorkspace(authenticatedId) {
     state.myUserId = authenticatedId;
     localStorage.setItem('secure-chat-id', authenticatedId);
     authScreen.classList.add('hidden');
     
+    initWebNotificationPermissions();
+
     const myKey = getSystemKey(state.myUserId);
+    if (myKey === "avindia") myVerifiedBadge.classList.remove('hidden');
 
-    // Update verified status for local system owners
-    if (myKey === "avindia") {
-        myVerifiedBadge.classList.remove('hidden');
-    } else {
-        myVerifiedBadge.classList.add('hidden');
-    }
-
-    // Dynamic Database Directory Mirror Tracker
     onValue(ref(database, 'users'), (snapshot) => {
         state.registeredUsersMap = snapshot.val() || {};
-        
         const myData = state.registeredUsersMap[myKey];
         if (myData) {
             myDisplayId.innerText = myData.name ? myData.name : `@${state.myUserId}`;
             if (myData.avatarUrl) {
-                myAvatarContainer.innerHTML = `<img src="${myData.avatarUrl}" class="w-full h-full object-cover"/>`;
+                myAvatarContainer.innerHTML = `<img src="${myData.avatarUrl}"/>`;
             } else {
                 myAvatarContainer.innerHTML = `<span id="my-avatar-letter">${state.myUserId.charAt(0).toUpperCase()}</span>`;
             }
         }
+        
+        // Loop through all direct user nodes to attach notification background monitors
+        Object.keys(state.registeredUsersMap).forEach(userKey => {
+            if (userKey === myKey) return;
+            const targetUser = state.registeredUsersMap[userKey];
+            const tokenPath = [myKey, userKey].sort().join("____");
+            registerGlobalNotificationObserver(userKey, `secure_chats/${tokenPath}`, {
+                id: userKey, name: targetUser.name || targetUser.userId,
+                subtitle: targetUser.status || "Secure Tunnel Active", avatarUrl: targetUser.avatarUrl || ""
+            });
+        });
+
         renderChannelDirectory();
-        if (state.activeThreadId && state.currentTab === 'direct') {
+        if (state.activeThreadId && (state.currentTab === 'direct' || state.currentTab === 'explore')) {
             refreshActiveHeaderMetadata(state.activeThreadId);
         }
     });
 
-    // Sync Explicit Allowed Active Chat Contact Array List Nodes
     onValue(ref(database, `contacts/${myKey}`), (snapshot) => {
-        const contactData = snapshot.val() || {};
-        state.connectedChatsList = Object.keys(contactData);
-        renderChannelDirectory();
+        state.connectedChatsList = Object.keys(snapshot.val() || {});
+        if (state.currentTab === 'direct') renderChannelDirectory();
     });
 
-    onValue(ref(database, 'topics'), (snapshot) => {
-        const topicsData = snapshot.val() || {};
-        state.dynamicCommunitiesList = Object.keys(topicsData).map(key => ({
-            id: key,
-            name: topicsData[key].name,
-            subtitle: topicsData[key].description || "Public space node",
-            avatar: topicsData[key].emoji || "👥",
-            isGroup: true
-        }));
-        renderChannelDirectory();
+    // Realtime Private Group Synchronization Hook
+    onValue(ref(database, 'groups'), (snapshot) => {
+        const totalGroupsMap = snapshot.val() || {};
+        const parsedGroupsList = [];
+        for (const groupId in totalGroupsMap) {
+            const groupData = totalGroupsMap[groupId];
+            if (groupData.members && groupData.members[myKey]) {
+                const memberNames = Object.values(groupData.members).map(m => m.name || m.userId);
+                const itemObject = {
+                    id: groupId, name: groupData.name, subtitle: memberNames.join(", "),
+                    avatar: groupData.emoji || "👥", description: groupData.description || "",
+                    creator: groupData.creator || "", members: groupData.members, isGroup: true, isPublicRoom: false
+                };
+                parsedGroupsList.push(itemObject);
+
+                // Register network notification background path pipeline updates
+                registerGlobalNotificationObserver(groupId, `group_chats/${groupId}`, itemObject);
+            }
+        }
+        state.dynamicCommunitiesList = parsedGroupsList;
+        if (state.currentTab === 'community') renderChannelDirectory();
+    });
+
+    // Realtime Public Accessible Groups Synchronization Hook
+    onValue(ref(database, 'public_groups'), (snapshot) => {
+        const publicRoomsMap = snapshot.val() || {};
+        const tempPublicList = [];
+        for (const id in publicRoomsMap) {
+            const room = publicRoomsMap[id];
+            const roomObject = {
+                id: id, name: room.name, subtitle: room.description || "Public Open Room Platform",
+                avatar: room.emoji || "🌐", creator: room.creator || "System", isGroup: true, isPublicRoom: true
+            };
+            tempPublicList.push(roomObject);
+
+            // Hook up observer systems to dynamically catch background transmissions
+            registerGlobalNotificationObserver(id, `public_chats/${id}`, roomObject);
+        }
+        state.globalPublicGroupsList = tempPublicList;
+        
+        // Also attach background monitor observer on the global system lobby route
+        registerGlobalNotificationObserver('global_lobby', `public_chats/global_lobby`, {
+            id: 'global_lobby', name: 'Global Open Chat Network', avatar: '🌐', isGroup: false, isGlobalLobby: true
+        });
+
+        if (state.currentTab === 'explore') renderChannelDirectory();
     });
 }
 
-// WhatsApp New Contact Init Action Handlers
+// Start New Connection Contact Configuration
 btnTriggerNewChat.addEventListener('click', () => {
-    newChatModal.classList.remove('hidden');
-    targetUseridSearch.value = '';
-    newChatError.classList.add('hidden');
-    targetUseridSearch.focus();
+    newChatModal.classList.remove('hidden'); targetUseridSearch.value = '';
+    newChatError.classList.add('hidden'); targetUseridSearch.focus();
 });
 btnCloseNewChat.addEventListener('click', () => newChatModal.classList.add('hidden'));
 
@@ -518,347 +1198,538 @@ btnSubmitNewChat.addEventListener('click', async () => {
     const myKey = getSystemKey(state.myUserId);
 
     if (!targetKey) return;
-    if (targetKey === myKey) {
-        newChatError.innerText = "You cannot link a tunnel connection to yourself.";
-        newChatError.classList.remove('hidden');
-        return;
-    }
+    if (targetKey === myKey) return alert("You cannot link tunnels to yourself.");
 
     const checkSnapshot = await get(child(ref(database), `users/${targetKey}`));
     if (!checkSnapshot.exists()) {
         newChatError.innerText = "Target Account ID node was not discovered.";
-        newChatError.classList.remove('hidden');
-        return;
+        newChatError.classList.remove('hidden'); return;
     }
 
     const realTargetUserId = checkSnapshot.val().userId;
-
-    // Persist symmetrical contact mapping lists across nodes
     await set(ref(database, `contacts/${myKey}/${targetKey}`), realTargetUserId);
     await set(ref(database, `contacts/${targetKey}/${myKey}`), state.myUserId);
 
-    newChatModal.classList.add('hidden');
-    
-    // Auto-select newly connected chat room pipeline
+    newChatModal.classList.add('hidden'); switchTab('direct');
     selectConversation({
-        id: targetKey,
-        name: checkSnapshot.val().name || realTargetUserId,
-        subtitle: checkSnapshot.val().status || "Secure Tunnel Active",
-        avatarUrl: checkSnapshot.val().avatarUrl || "",
-        isGroup: false
+        id: targetKey, name: checkSnapshot.val().name || realTargetUserId,
+        subtitle: checkSnapshot.val().status || "Secure Tunnel Active", avatarUrl: checkSnapshot.val().avatarUrl || ""
     });
 });
 
-// Edit Profile Modal Controllers
+// Profile Editor Actions
 btnTriggerProfileEdit.addEventListener('click', () => {
-    const myKey = getSystemKey(state.myUserId);
-    const data = state.registeredUsersMap[myKey] || {};
-    editDisplayName.value = data.name || '';
-    editAvatarUrl.value = data.avatarUrl || '';
-    editStatus.value = data.status || 'Available';
+    const data = state.registeredUsersMap[getSystemKey(state.myUserId)] || {};
+    editDisplayName.value = data.name || ''; editAvatarUrl.value = data.avatarUrl || '';
+    editStatus.value = data.status || 'Available'; editIsPublic.checked = data.isPublic || false;
     profileModal.classList.remove('hidden');
 });
-
 btnCloseProfile.addEventListener('click', () => profileModal.classList.add('hidden'));
 
 btnSaveProfile.addEventListener('click', async () => {
     const myKey = getSystemKey(state.myUserId);
+    const updatedName = editDisplayName.value.trim();
+    
     await update(ref(database, `users/${myKey}`), {
-        name: editDisplayName.value.trim(),
-        avatarUrl: editAvatarUrl.value.trim(),
-        status: editStatus.value.trim() || 'Available'
+        name: updatedName, avatarUrl: editAvatarUrl.value.trim(),
+        status: editStatus.value.trim() || 'Available', isPublic: editIsPublic.checked
+    });
+
+    state.dynamicCommunitiesList.forEach(async (group) => {
+        if (group.members && group.members[myKey]) {
+            await set(ref(database, `groups/${group.id}/members/${myKey}`), {
+                userId: state.myUserId, name: updatedName || state.myUserId
+            });
+        }
     });
     profileModal.classList.add('hidden');
 });
 
-// Community Creation Form Controls
+// Group Creation Engine (Supporting Private & Public configurations)
 btnTriggerTopicModal.addEventListener('click', () => {
-    topicModal.classList.remove('hidden');
-    newTopicName.focus();
+    topicModal.classList.remove('hidden'); newTopicName.value = '';
+    newTopicDesc.value = ''; newTopicEmoji.value = '👥';
+    newTopicIsPublic.checked = false; newTopicName.focus();
 });
 btnCloseModal.addEventListener('click', () => topicModal.classList.add('hidden'));
+
 btnSubmitTopic.addEventListener('click', async () => {
     const name = newTopicName.value.trim();
-    const desc = newTopicDesc.value.trim() || "Public open discussion group.";
+    const desc = newTopicDesc.value.trim() || "Pipeline Room Node.";
     const emoji = newTopicEmoji.value.trim() || "👥";
+    const isPublicRoom = newTopicIsPublic.checked;
 
-    if (!name) return alert("Forum title required.");
-    const pathToken = `topic_${name.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+    if (!name) return alert("Group title is required.");
+    
+    const timestampId = Date.now();
+    const myKey = getSystemKey(state.myUserId);
+    const myData = state.registeredUsersMap[myKey] || {};
 
-    const checkSnapshot = await get(child(ref(database), `topics/${pathToken}`));
-    if (checkSnapshot.exists()) return alert("Community path matching key already exists.");
+    if (isPublicRoom) {
+        const pathToken = `public_room_${timestampId}`;
+        await set(ref(database, `public_groups/${pathToken}`), {
+            name: name, description: desc, emoji: emoji, creator: state.myUserId, createdTimestamp: timestampId
+        });
+        topicModal.classList.add('hidden'); switchTab('explore');
+        selectConversation({ id: pathToken, name: name, subtitle: desc, avatar: emoji, creator: state.myUserId, isGroup: true, isPublicRoom: true });
+    } else {
+        const pathToken = `group_${timestampId}`;
+        const initialMembers = {};
+        initialMembers[myKey] = { userId: state.myUserId, name: myData.name || state.myUserId };
 
-    await set(ref(database, `topics/${pathToken}`), {
-        name: name, description: desc, emoji: emoji, creator: state.myUserId, createdTimestamp: Date.now()
+        await set(ref(database, `groups/${pathToken}`), {
+            name: name, description: desc, emoji: emoji, creator: state.myUserId, createdTimestamp: timestampId, members: initialMembers
+        });
+        topicModal.classList.add('hidden'); switchTab('community');
+        selectConversation({ id: pathToken, name: name, subtitle: myData.name || state.myUserId, avatar: emoji, description: desc, creator: state.myUserId, members: initialMembers, isGroup: true, isPublicRoom: false });
+    }
+});
+
+// Group Admin Invitation Hook Node Setup
+btnGroupAddMember.addEventListener('click', async () => {
+    groupAddMemberError.classList.add('hidden');
+    const targetKey = getSystemKey(groupAddMemberId.value.trim());
+    if(!targetKey) return;
+    
+    const targetSnapshot = await get(child(ref(database), `users/${targetKey}`));
+    if(!targetSnapshot.exists()) {
+        groupAddMemberError.innerText = "User ID target node not found.";
+        groupAddMemberError.classList.remove('hidden'); return;
+    }
+    
+    const targetData = targetSnapshot.val();
+    const currentGroup = state.dynamicCommunitiesList.find(g => g.id === state.activeThreadId);
+    if(!currentGroup) return;
+    
+    await set(ref(database, `groups/${state.activeThreadId}/members/${targetKey}`), {
+        userId: targetData.userId, name: targetData.name || targetData.userId
     });
-    btnCloseModal.click();
+    groupAddMemberId.value = ''; activeChatHeaderBanner.click();
 });
 
-// Image Transmission Modal Action Hooks
+// Image Transmission Dialog Handles
 btnTriggerImageModal.addEventListener('click', () => {
-    if (!state.activeRoomPath) return alert("Select an active communication node channel target first.");
-    imageShareModal.classList.remove('hidden');
-    shareImgUrl.focus();
+    if (!state.activeRoomPath) return alert("Select an active conversation channel first.");
+    imageShareModal.classList.remove('hidden'); shareImgUrl.focus();
 });
-btnCloseImgModal.addEventListener('click', () => {
-    imageShareModal.classList.add('hidden');
-    shareImgUrl.value = '';
-});
+btnCloseImgModal.addEventListener('click', () => { imageShareModal.classList.add('hidden'); shareImgUrl.value = ''; });
 btnSubmitImgMsg.addEventListener('click', () => {
-    const url = shareImgUrl.value.trim();
-    if (!url) return;
-    transmitMessagePayload(url, "image");
-    btnCloseImgModal.click();
+    const url = shareImgUrl.value.trim(); if (!url) return;
+    transmitMessagePayload(url, "image"); btnCloseImgModal.click();
 });
 
-// Sidebar View Filtering Matrix Setup
+// View Navigation Filters
 tabDirectBtn.addEventListener('click', () => switchTab('direct'));
 tabCommunityBtn.addEventListener('click', () => switchTab('community'));
+tabExploreBtn.addEventListener('click', () => switchTab('explore'));
+
 sidebarSearch.addEventListener('input', (e) => {
-    state.searchQuery = e.target.value.toLowerCase().trim();
-    renderChannelDirectory();
+    state.searchQuery = e.target.value.toLowerCase().trim(); renderChannelDirectory();
 });
 mobileBackBtn.addEventListener('click', () => {
-    chatPanel.classList.add('hidden'); sidebarPanel.classList.remove('hidden');
-    if (state.activeRoomPath) set(ref(database, `typing/${state.activeThreadId}/${state.myUserId}`), null);
+    chatPanel.classList.add('hidden-mobile'); sidebarPanel.classList.remove('hidden-mobile');
+    if (state.activeRoomPath && !state.activeRoomPath.includes('public')) {
+        set(ref(database, `typing/${state.activeThreadId}/${state.myUserId}`), null);
+    }
+    if (state.activeThreadRef) off(state.activeThreadRef);
 });
 
 function switchTab(targetTab) {
     state.currentTab = targetTab;
-    if (targetTab === 'direct') {
-        tabDirectBtn.className = "flex-1 py-3 text-center border-b-2 border-teal-600 text-teal-600 font-semibold cursor-pointer transition-all";
-        tabCommunityBtn.className = "flex-1 py-3 text-center border-b-2 border-transparent hover:text-gray-700 font-semibold cursor-pointer transition-all";
-        btnTriggerTopicModal.classList.add('hidden');
-    } else {
-        tabCommunityBtn.className = "flex-1 py-3 text-center border-b-2 border-teal-600 text-teal-600 font-semibold cursor-pointer transition-all";
-        tabDirectBtn.className = "flex-1 py-3 text-center border-b-2 border-transparent hover:text-gray-700 font-semibold cursor-pointer transition-all";
+    tabDirectBtn.className = "tab-btn" + (targetTab === 'direct' ? " active" : "");
+    tabCommunityBtn.className = "tab-btn" + (targetTab === 'community' ? " active" : "");
+    tabExploreBtn.className = "tab-btn" + (targetTab === 'explore' ? " active" : "");
+    
+    if (targetTab !== 'direct') {
         btnTriggerTopicModal.classList.remove('hidden');
+    } else {
+        btnTriggerTopicModal.classList.add('hidden');
     }
     renderChannelDirectory();
 }
 
+// Sectional UI Generator Engine Block (Manages the Explore layout sections)
 function renderChannelDirectory() {
     channelsContainer.innerHTML = '';
     if (!state.myUserId) return;
 
-    let items = [];
+    const myKey = getSystemKey(state.myUserId);
+
     if (state.currentTab === 'direct') {
-        // Enforce WhatsApp Lockdown: Only map explicit keys validated inside connections table list array
-        items = state.connectedChatsList.map(key => {
+        const directItems = state.connectedChatsList.map(key => {
             const profile = state.registeredUsersMap[key] || {};
-            const fallbackId = profile.userId || key;
             return {
-                id: key,
-                name: profile.name ? profile.name : fallbackId,
-                subtitle: profile.status || "Secure Tunnel Active",
-                avatarUrl: profile.avatarUrl || "",
-                isGroup: false
+                id: key, name: profile.name ? profile.name : (profile.userId || key),
+                subtitle: profile.status || "Secure Tunnel Active", avatarUrl: profile.avatarUrl || ""
             };
+        }).filter(item => item.name.toLowerCase().includes(state.searchQuery));
+
+        if(directItems.length === 0) {
+            channelsContainer.innerHTML = `<div class="empty-directory-fallback"><p>No direct private conversations active.</p></div>`;
+            return;
+        }
+        directItems.forEach(item => appendItemRowDOM(item));
+
+    } else if (state.currentTab === 'community') {
+        const communityItems = state.dynamicCommunitiesList.filter(item => item.name.toLowerCase().includes(state.searchQuery));
+        if(communityItems.length === 0) {
+            channelsContainer.innerHTML = `<div class="empty-directory-fallback"><p>No private rooms joined.</p><p class="highlight-hint">Click the "+" icon above to deploy a group.</p></div>`;
+            return;
+        }
+        communityItems.forEach(item => appendItemRowDOM(item));
+
+    } else if (state.currentTab === 'explore') {
+        // --- SECTION 1: PUBLIC DISCOVERY NETWORKS (GLOBAL LOBBY + PUBLIC GROUPS) ---
+        const publicSpacesList = [];
+        
+        const globalLobbyObject = {
+            id: 'global_lobby', name: 'Global Open Chat Network', subtitle: 'Public lobby channel • Matrix Room Platform',
+            avatar: '🌐', isGroup: false, isGlobalLobby: true
+        };
+        if (globalLobbyObject.name.toLowerCase().includes(state.searchQuery)) publicSpacesList.push(globalLobbyObject);
+
+        state.globalPublicGroupsList.forEach(group => {
+            if (group.name.toLowerCase().includes(state.searchQuery)) publicSpacesList.push(group);
         });
-    } else {
-        items = state.dynamicCommunitiesList;
-    }
 
-    const filtered = items.filter(item => item.name.toLowerCase().includes(state.searchQuery));
-    if (filtered.length === 0) {
-        channelsContainer.innerHTML = state.currentTab === 'direct' 
-            ? `<div class="p-6 text-center"><p class="text-xs text-gray-400 mb-2">No active connections mapping list discovered</p><p class="text-[11px] text-teal-600 font-medium">Click the chat button at the top to add a user ID.</p></div>`
-            : `<p class="text-xs text-gray-400 text-center mt-6">No communities discovered</p>`;
-        return;
-    }
-
-    filtered.forEach(item => {
-        const row = document.createElement('div');
-        const isSelected = state.activeThreadId === item.id;
-        row.className = `flex items-center gap-3 px-4 py-3 cursor-pointer transition-all border-b border-[#f0f2f5] ${isSelected ? 'bg-[#f0f2f5]' : 'hover:bg-[#f5f6f6]'}`;
-
-        let avatarNode = '';
-        if (item.isGroup) {
-            avatarNode = `<div class="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center font-semibold text-lg shadow-sm flex-shrink-0">${item.avatar}</div>`;
-        } else if (item.avatarUrl) {
-            avatarNode = `<div class="w-12 h-12 rounded-full bg-teal-600 shadow-sm flex-shrink-0 overflow-hidden"><img src="${item.avatarUrl}" class="w-full h-full object-cover"/></div>`;
+        appendSectionHeaderDOM("Public Networks & Rooms", publicSpacesList.length);
+        if (publicSpacesList.length === 0) {
+            appendFallbackMessageDOM("No public network channels match search criteria.");
         } else {
-            avatarNode = `<div class="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-semibold text-sm shadow-sm flex-shrink-0 uppercase">${item.name.charAt(0)}</div>`;
+            publicSpacesList.forEach(space => appendItemRowDOM(space));
         }
 
-        // Render profile names with conditional gradient badges for 'avindia'
-        const showBadge = (!item.isGroup && item.id === "avindia");
+        // --- SECTION 2: GLOBAL PUBLIC NODE DIRECTORY (ALL SYSTEM USERS CHOSEN TO BE PUBLIC) ---
+        const publicUsersList = Object.keys(state.registeredUsersMap).filter(key => {
+            return key !== myKey && state.registeredUsersMap[key].isPublic === true;
+        }).map(key => {
+            const profile = state.registeredUsersMap[key];
+            return {
+                id: key, name: profile.name ? profile.name : `@${profile.userId}`,
+                subtitle: profile.status || "Public Profile Node", avatarUrl: profile.avatarUrl || "", isExploreNode: true
+            };
+        }).filter(user => user.name.toLowerCase().includes(state.searchQuery));
 
-        row.innerHTML = `
-            ${avatarNode}
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-1.5 min-w-0">
-                    <h4 class="font-medium text-gray-900 truncate text-sm md:text-base">${item.name}</h4>
-                    ${showBadge ? `<span class="flex-shrink-0 w-3.5 h-3.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 flex items-center justify-center text-[8px] text-white font-black shadow-sm select-none">✓</span>` : ''}
-                </div>
-                <p class="text-xs text-gray-500 truncate mt-0.5">${item.subtitle}</p>
+        appendSectionHeaderDOM("Public Profile Directory", publicUsersList.length);
+        if (publicUsersList.length === 0) {
+            appendFallbackMessageDOM("No public identity profiles found.");
+        } else {
+            publicUsersList.forEach(user => appendItemRowDOM(user));
+        }
+    }
+}
+
+function appendSectionHeaderDOM(titleText, count) {
+    const header = document.createElement('div');
+    header.className = "explore-section-header";
+    header.innerHTML = `<span>${titleText}</span><span class="explore-count-pill">${count}</span>`;
+    channelsContainer.appendChild(header);
+}
+
+function appendFallbackMessageDOM(message) {
+    const wrapper = document.createElement('div');
+    wrapper.className = "empty-directory-fallback";
+    wrapper.innerHTML = `<p style="padding: 6px 0;">${message}</p>`;
+    channelsContainer.appendChild(wrapper);
+}
+
+function appendItemRowDOM(item) {
+    const row = document.createElement('div');
+    const isSelected = state.activeThreadId === item.id;
+    
+    if (item.isGlobalLobby) {
+        row.className = `directory-row global-lobby-card ${isSelected ? 'selected' : ''}`;
+    } else if (item.isPublicRoom) {
+        row.className = `directory-row public-group-card ${isSelected ? 'selected' : ''}`;
+    } else {
+        row.className = `directory-row ${isSelected ? 'selected' : ''}`;
+    }
+
+    let avatarNode = '';
+    if (item.isGroup || item.isGlobalLobby) {
+        avatarNode = `<div class="directory-group-avatar" style="${item.isGlobalLobby ? 'background-color:#0d9488;' : 'background-color:#0f766e;'}">${item.avatar}</div>`;
+    } else if (item.avatarUrl) {
+        avatarNode = `<div class="avatar-circle"><img src="${item.avatarUrl}"/></div>`;
+    } else {
+        avatarNode = `<div class="avatar-circle font-bold" style="background-color:#0d9488;">${item.name.charAt(0)}</div>`;
+    }
+
+    const showBadge = (!item.isGroup && !item.isGlobalLobby && item.id === "avindia");
+    const unreadCount = state.unreadCountersMap[item.id] || 0;
+
+    row.innerHTML = `
+        ${avatarNode}
+        <div class="directory-row-body">
+            <div class="identity-title-row">
+                <h4 class="truncate" style="flex:1;">${item.name}</h4>
+                ${showBadge ? `<span class="gradient-tick">✓</span>` : ''}
+                ${item.isGlobalLobby ? `<span class="global-lobby-badge">Agora</span>` : ''}
+                ${item.isPublicRoom ? `<span class="public-group-badge">Open Room</span>` : ''}
             </div>
-        `;
-        row.addEventListener('click', () => selectConversation(item));
-        channelsContainer.appendChild(row);
+            <p class="truncate ${item.isGroup || item.isGlobalLobby ? 'group-meta-subtext' : ''}">${item.subtitle}</p>
+        </div>
+        <div class="directory-row-right-meta">
+            ${unreadCount > 0 ? `<span class="unread-badge-pill">${unreadCount}</span>` : ''}
+        </div>
+    `;
+    
+    row.addEventListener('click', () => {
+        if (item.isExploreNode) {
+            initializeExploreChatBridge(item);
+        } else {
+            selectConversation(item);
+        }
+    });
+    channelsContainer.appendChild(row);
+}
+
+async function initializeExploreChatBridge(exploreItem) {
+    const myKey = getSystemKey(state.myUserId);
+    const targetKey = exploreItem.id;
+    const targetProfile = state.registeredUsersMap[targetKey];
+    if (!targetProfile) return;
+    
+    await set(ref(database, `contacts/${myKey}/${targetKey}`), targetProfile.userId);
+    await set(ref(database, `contacts/${targetKey}/${myKey}`), state.myUserId);
+    
+    switchTab('direct');
+    selectConversation({
+        id: targetKey, name: exploreItem.name, subtitle: targetProfile.status || "Secure Tunnel Active", avatarUrl: targetProfile.avatarUrl || ""
     });
 }
 
-function selectConversation(item) {
-    sidebarPanel.classList.add('hidden'); sidebarPanel.classList.add('md:flex');
-    chatPanel.classList.remove('hidden'); chatPanel.classList.add('flex');
+function getWhatsAppTimelineString(timestamp) {
+    const targetZero = new Date(new Date(timestamp).getFullYear(), new Date(timestamp).getMonth(), new Date(timestamp).getDate());
+    const todayZero = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    const explicitDaysPast = Math.round((todayZero.getTime() - targetZero.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (explicitDaysPast === 0) return "Today";
+    if (explicitDaysPast === 1) return "Yesterday";
+    if (explicitDaysPast < 7) return new Date(timestamp).toLocaleDateString([], { weekday: 'long' }); 
+    return new Date(timestamp).toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+// Conversation Thread Switching Logic Matrix
+async function selectConversation(item) {
+    sidebarPanel.classList.add('hidden-mobile'); chatPanel.classList.remove('hidden-mobile');
 
     if (state.activeThreadRef) off(state.activeThreadRef);
     if (state.activeTypingRef) {
-        set(ref(database, `typing/${state.activeThreadId}/${state.myUserId}`), null);
+        if (state.activeRoomPath && !state.activeRoomPath.includes('public')) {
+            set(ref(database, `typing/${state.activeThreadId}/${state.myUserId}`), null);
+        }
         off(state.activeTypingRef);
     }
 
-    state.activeThreadId = item.id;
-    renderChannelDirectory();
-    emptyState.classList.add('hidden');
+    state.activeThreadId = item.id; 
+    state.lastRenderedDateString = null; 
+    
+    // Clear the unread badge tracker counter mapping for this opened channel workspace
+    state.unreadCountersMap[item.id] = 0;
+    renderChannelDirectory(); 
+    
+    emptyState.classList.add('hidden'); 
     messageCanvas.innerHTML = '';
 
     refreshActiveHeaderMetadata(item.id, item);
 
-    if (state.currentTab === 'direct') {
-        const myKey = getSystemKey(state.myUserId);
-        const secureClusterToken = [myKey, item.id].sort().join("____");
-        state.activeRoomPath = `secure_chats/${secureClusterToken}`;
+    // Context Evaluation for Routing Strategy Path Token Generation
+    if (item.id === 'global_lobby') {
+        state.activeRoomPath = `public_chats/global_lobby`;
+    } else if (item.isPublicRoom || item.id.startsWith('public_room_')) {
+        state.activeRoomPath = `public_chats/${item.id}`;
+    } else if (item.isGroup || item.id.startsWith('group_')) {
+        state.activeRoomPath = `group_chats/${item.id}`;
     } else {
-        state.activeRoomPath = `public_topics/${item.id}`;
+        const secureClusterToken = [getSystemKey(state.myUserId), item.id].sort().join("____");
+        state.activeRoomPath = `secure_chats/${secureClusterToken}`;
     }
 
     state.activeThreadRef = ref(database, state.activeRoomPath);
     onChildAdded(state.activeThreadRef, (snapshot) => appendBubbleToCanvas(snapshot.val()));
 
-    state.activeTypingRef = ref(database, `typing/${state.activeThreadId}`);
-    onValue(state.activeTypingRef, (snapshot) => {
-        const typers = snapshot.val() || {};
-        const activeTypers = Object.keys(typers).filter(user => getSystemKey(user) !== getSystemKey(state.myUserId));
-        if (activeTypers.length > 0) {
-            activeSubtitle.innerText = `${activeTypers.join(', ').toUpperCase()} typing...`;
-            activeSubtitle.className = "text-xs text-emerald-600 font-medium animate-pulse truncate";
-        } else {
-            refreshActiveHeaderMetadata(state.activeThreadId);
-        }
-    });
-}
-
-function refreshActiveHeaderMetadata(targetId, fallbackItem = null) {
-    if (state.currentTab === 'direct') {
-        const profile = state.registeredUsersMap[targetId];
-        if (profile) {
-            activeTitle.innerText = profile.name ? profile.name : `@${profile.userId}`;
-            activeSubtitle.innerText = profile.status || "Secure Tunnel Active";
-            activeSubtitle.className = "text-xs text-gray-500 truncate";
-            
-            if (targetId === "avindia") {
-                activeVerifiedBadge.classList.remove('hidden');
+    // Synchronize typing indications for private contexts only
+    if (!state.activeRoomPath.includes('public')) {
+        state.activeTypingRef = ref(database, `typing/${state.activeThreadId}`);
+        onValue(state.activeTypingRef, (snapshot) => {
+            const typers = snapshot.val() || {};
+            const activeTypers = Object.keys(typers).filter(user => getSystemKey(user) !== getSystemKey(state.myUserId));
+            if (activeTypers.length > 0) {
+                activeSubtitle.innerText = `${activeTypers.join(', ').toUpperCase()} typing...`;
+                activeSubtitle.className = "truncate typing-state";
             } else {
-                activeVerifiedBadge.classList.add('hidden');
+                refreshActiveHeaderMetadata(state.activeThreadId, item);
             }
-
-            if (profile.avatarUrl) {
-                activeAvatarContainer.innerHTML = `<img src="${profile.avatarUrl}" class="w-full h-full object-cover"/>`;
-            } else {
-                const letter = profile.userId ? profile.userId.charAt(0).toUpperCase() : targetId.charAt(0).toUpperCase();
-                activeAvatarContainer.innerHTML = `<span id="active-avatar">${letter}</span>`;
-            }
-        }
-    } else if (fallbackItem) {
-        activeTitle.innerText = fallbackItem.name;
-        activeSubtitle.innerText = fallbackItem.subtitle;
-        activeVerifiedBadge.classList.add('hidden');
-        activeAvatarContainer.innerHTML = `<span id="active-avatar">${fallbackItem.avatar}</span>`;
+        });
     }
 }
 
-// Typing Notification Interceptor Engine
+function refreshActiveHeaderMetadata(targetId, fallbackItem = null) {
+    if (targetId === 'global_lobby') {
+        activeTitle.innerText = "Global Open Chat Network"; activeSubtitle.innerText = "Public Agora Matrix • Room Details";
+        activeSubtitle.className = "truncate group-meta-subtext"; activeVerifiedBadge.classList.add('hidden');
+        activeAvatarContainer.innerHTML = `<span id="active-avatar">🌐</span>`;
+        return;
+    }
+
+    if (targetId.startsWith('public_room_')) {
+        const matched = state.globalPublicGroupsList.find(g => g.id === targetId) || fallbackItem;
+        activeTitle.innerText = matched ? matched.name : "Public Room";
+        activeSubtitle.innerText = "Everyone is welcome • Tap for details";
+        activeSubtitle.className = "truncate group-meta-subtext"; activeVerifiedBadge.classList.add('hidden');
+        activeAvatarContainer.innerHTML = `<span id="active-avatar">${matched ? matched.avatar : '🌐'}</span>`;
+        return;
+    }
+
+    const matchedGroup = state.dynamicCommunitiesList.find(g => g.id === targetId);
+    if (!matchedGroup && state.registeredUsersMap[targetId]) {
+        const profile = state.registeredUsersMap[targetId];
+        activeTitle.innerText = profile.name ? profile.name : `@${profile.userId}`;
+        activeSubtitle.innerText = profile.status || "Secure Tunnel Active"; activeSubtitle.className = "truncate";
+        if (targetId === "avindia") { activeVerifiedBadge.classList.remove('hidden'); } else { activeVerifiedBadge.classList.add('hidden'); }
+
+        if (profile.avatarUrl) {
+            activeAvatarContainer.innerHTML = `<img src="${profile.avatarUrl}"/>`;
+        } else {
+            activeAvatarContainer.innerHTML = `<span id="active-avatar">${profile.userId.charAt(0).toUpperCase()}</span>`;
+        }
+    } else if (matchedGroup) {
+        activeTitle.innerText = matchedGroup.name;
+        const totalMembers = Object.keys(matchedGroup.members || {}).length;
+        activeSubtitle.innerText = `${totalMembers} node member${totalMembers !== 1 ? 's' : ''} • Tap for details`;
+        activeSubtitle.className = "truncate group-meta-subtext"; activeVerifiedBadge.classList.add('hidden');
+        activeAvatarContainer.innerHTML = `<span id="active-avatar">${matchedGroup.avatar}</span>`;
+    }
+}
+
+// Meta Modal Details View Configuration Panel Trigger Map
+activeChatHeaderBanner.addEventListener('click', () => {
+    if (state.activeThreadId === 'global_lobby') {
+        infoGroupTitle.innerText = "Global Open Chat";
+        infoGroupDesc.innerText = "This is a fixed, open server lobby. Every user on the network can monitor and write data blocks directly to this channel without registration or group invites.";
+        groupAdminTools.classList.add('hidden'); infoParticipantCount.innerText = "Active Nodes (∞)";
+        infoParticipantsContainer.innerHTML = `<div style="padding:16px; text-align:center; font-size:12px; color:#6b7280;">Global channels don't restrict node connections. Anyone can talk!</div>`;
+        groupInfoModal.classList.remove('hidden'); return;
+    }
+
+    if (state.activeThreadId.startsWith('public_room_')) {
+        const publicRoom = state.globalPublicGroupsList.find(g => g.id === state.activeThreadId);
+        if (!publicRoom) return;
+        infoGroupTitle.innerText = publicRoom.name;
+        infoGroupDesc.innerText = `${publicRoom.subtitle || ''} (Deployed publicly by admin node @${publicRoom.creator})`;
+        groupAdminTools.classList.add('hidden'); infoParticipantCount.innerText = "Access Status";
+        infoParticipantsContainer.innerHTML = `<div style="padding:16px; text-align:center; font-size:12px; color:#0d9488; font-weight:600;">🌐 Unrestricted Access Channel: No special group membership tokens needed to chat here!</div>`;
+        groupInfoModal.classList.remove('hidden'); return;
+    }
+
+    const targetGroup = state.dynamicCommunitiesList.find(g => g.id === state.activeThreadId);
+    if (!targetGroup) return; 
+
+    groupAdminTools.classList.remove('hidden'); infoGroupTitle.innerText = targetGroup.name;
+    infoGroupDesc.innerText = targetGroup.description || "Private Group."; groupAddMemberError.classList.add('hidden'); groupAddMemberId.value = '';
+    
+    const membersList = Object.entries(targetGroup.members || {});
+    infoParticipantCount.innerText = `Active Nodes (${membersList.length})`; infoParticipantsContainer.innerHTML = '';
+
+    membersList.forEach(([memberKey, memberData]) => {
+        const isCreatorAdmin = (memberData.userId === targetGroup.creator);
+        const row = document.createElement('div'); row.className = "participant-member-row";
+        row.innerHTML = `
+            <div class="participant-meta-block">
+                <div class="avatar-circle font-semibold" style="width:30px; height:30px; font-size:11px; background-color:#6b7280;">${memberData.name.charAt(0).toUpperCase()}</div>
+                <span class="participant-title-text">${memberData.name} ${memberKey === getSystemKey(state.myUserId) ? '(You)' : ''}</span>
+            </div>
+            ${isCreatorAdmin ? `<span class="admin-badge-pill">Group Admin</span>` : ''}
+        `;
+        infoParticipantsContainer.appendChild(row);
+    });
+    groupInfoModal.classList.remove('hidden');
+});
+
+btnCloseGroupInfo.addEventListener('click', () => groupInfoModal.classList.add('hidden'));
+
+// Typing Event Timers
 let typingTimeout = null;
 messagePayload.addEventListener('input', () => {
-    if (!state.activeThreadId) return;
+    if (!state.activeThreadId || state.activeRoomPath.includes('public')) return;
     set(ref(database, `typing/${state.activeThreadId}/${state.myUserId}`), true);
     clearTimeout(typingTimeout);
     typingTimeout = setTimeout(() => set(ref(database, `typing/${state.activeThreadId}/${state.myUserId}`), null), 1800);
 });
 
-// Outbound Data Form Transmission Actions
+// Outbound Messaging Form Interceptor Loop
 messagingForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const text = messagePayload.value.trim();
-    if (!text) return;
-
-    transmitMessagePayload(text, "text");
-    messagePayload.value = ''; messagePayload.focus();
+    e.preventDefault(); const text = messagePayload.value.trim(); if (!text) return;
+    transmitMessagePayload(text, "text"); messagePayload.value = ''; messagePayload.focus();
 });
 
 function transmitMessagePayload(contentString, typeEnum = "text") {
     if (!state.activeRoomPath) return;
-    
-    // Look up saved human name to inject as sender attribute inside chat rooms
     const myKey = getSystemKey(state.myUserId);
-    const cachedProfile = state.registeredUsersMap[myKey] || {};
-    const identityDisplayHandle = cachedProfile.name || state.myUserId;
+    const identityDisplayHandle = (state.registeredUsersMap[myKey] || {}).name || state.myUserId;
 
-    const messageObject = {
-        sender: identityDisplayHandle,
-        senderId: state.myUserId,
-        text: contentString,
-        type: typeEnum,
-        timestamp: Date.now()
-    };
-    set(push(state.activeThreadRef), messageObject);
-    set(ref(database, `typing/${state.activeThreadId}/${state.myUserId}`), null);
+    set(push(ref(database, state.activeRoomPath)), {
+        sender: identityDisplayHandle, senderId: state.myUserId, text: contentString, type: typeEnum, timestamp: Date.now()
+    });
+    if (!state.activeRoomPath.includes('public')) {
+        set(ref(database, `typing/${state.activeThreadId}/${state.myUserId}`), null);
+    }
 }
 
-// Regex Helpers
 function parseFormattingEntities(rawTextString) {
     let sanitized = rawTextString.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    const URL_EXPR = /(https?:\/\/[^\s]+)/g;
-    const PHONE_EXPR = /(\+?\d{1,4}?[\s.-]?\(?\d{1,3}?\)?[\s.-]?\d{1,4}[\s.-]?\d{1,4}[\s.-]?\d{1,9})/g;
-
-    sanitized = sanitized.replace(URL_EXPR, (matchedUrl) => {
-        return `<a href="${matchedUrl}" target="_blank" rel="noopener noreferrer" class="chat-link stop-prop">${matchedUrl}</a>`;
-    });
-    sanitized = sanitized.replace(PHONE_EXPR, (matchedPhone) => {
-        if (matchedPhone.trim().length < 7) return matchedPhone; 
-        return `<span class="chat-phone">${matchedPhone}</span>`;
-    });
+    sanitized = sanitized.replace(/(https?:\/\/[^\s]+)/g, (m) => `<a href="${m}" target="_blank" rel="noopener noreferrer" class="chat-link stop-prop">${m}</a>`);
+    sanitized = sanitized.replace(/(\+?\d{1,4}?[\s.-]?\(?\d{1,3}?\)?[\s.-]?\d{1,4}[\s.-]?\d{1,4}[\s.-]?\d{1,9})/g, (m) => m.trim().length < 7 ? m : `<span class="chat-phone">${m}</span>`);
     return sanitized;
 }
 
-// Canvas Stream HTML Bubble Generation Engine
+// Inbound Buffer Stream Layout Pipeline
 function appendBubbleToCanvas(data) {
-    const isMe = getSystemKey(data.senderId || data.sender) === getSystemKey(state.myUserId);
-    const containerDiv = document.createElement('div');
-    containerDiv.className = `flex w-full mb-1 ${isMe ? 'justify-end' : 'justify-start'}`;
-    const timeString = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    let coreContentMarkup = '';
-    if (data.type === "image") {
-        coreContentMarkup = `
-            <div class="mt-1 max-w-full overflow-hidden rounded-md border border-gray-200 shadow-inner bg-black">
-                <img src="${data.text}" class="w-full max-h-64 object-contain block cursor-pointer" onclick="window.open('${data.text}', '_blank')"/>
-            </div>`;
-    } else {
-        coreContentMarkup = `<span class="leading-relaxed break-words block">${parseFormattingEntities(data.text)}</span>`;
+    const messageDateString = getWhatsAppTimelineString(data.timestamp);
+    if (state.lastRenderedDateString !== messageDateString) {
+        state.lastRenderedDateString = messageDateString;
+        const dividerNode = document.createElement('div'); dividerNode.className = "timeline-divider-wrapper";
+        dividerNode.innerHTML = `<div class="timeline-badge-node">${messageDateString}</div>`;
+        messageCanvas.appendChild(dividerNode);
     }
 
-    // Append beautiful gradient tick marks to user messages if sent by avindia key
-    const senderKey = getSystemKey(data.senderId || "");
-    const showBubbleTick = (senderKey === "avindia");
+    const isMe = getSystemKey(data.senderId || data.sender) === getSystemKey(state.myUserId);
+    const containerDiv = document.createElement('div'); containerDiv.className = `bubble-row-layout ${isMe ? 'me' : 'them'}`;
+    const timeString = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    let coreContentMarkup = (data.type === "image") 
+        ? `<div class="bubble-image-container"><img src="${data.text}" onclick="window.open('${data.text}', '_blank')"/></div>`
+        : `<span class="bubble-text-node">${parseFormattingEntities(data.text)}</span>`;
+
+    const isGroupMode = state.dynamicCommunitiesList.some(g => g.id === state.activeThreadId) || state.globalPublicGroupsList.some(g => g.id === state.activeThreadId);
+    const isGlobalLobbyMode = (state.activeThreadId === 'global_lobby');
 
     containerDiv.innerHTML = `
-        <div class="max-w-[85%] md:max-w-[70%] rounded-lg px-3 py-1.5 shadow-sm relative text-sm ${isMe ? 'bg-[#d9fdd3] text-[#111b21] rounded-tr-none' : 'bg-white text-[#111b21] rounded-tl-none'}">
-            <div class="flex items-center gap-1">
-                ${!isMe && state.currentTab === 'community' ? `<p class="text-[11px] font-bold text-indigo-600 mb-0.5 select-none uppercase">${data.sender}</p>` : ''}
-                ${showBubbleTick && state.currentTab === 'community' ? `<span class="w-3 h-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 flex items-center justify-center text-[7px] text-white font-black shadow-xs select-none">✓</span>` : ''}
+        <div class="chat-bubble-card ${isMe ? 'me' : 'them'}">
+            <div style="display:flex; align-items:center; gap:4px;">
+                ${!isMe && (isGroupMode || isGlobalLobbyMode) ? `<p class="bubble-group-sender-header">${data.sender}</p>` : ''}
+                ${(getSystemKey(data.senderId || "") === "avindia") && (isGroupMode || isGlobalLobbyMode) ? `<span class="gradient-tick" style="width:12px; height:12px; font-size:7px;">✓</span>` : ''}
             </div>
-            <div class="flex flex-col gap-1">
-                ${coreContentMarkup}
-                <span class="text-[10px] text-gray-400 select-none whitespace-nowrap self-end mt-0.5">${timeString}</span>
+            <div class="bubble-meta-flex-wrapper">
+                ${coreContentMarkup} <span class="bubble-timestamp-label">${timeString}</span>
             </div>
         </div>
     `;
+    messageCanvas.appendChild(containerDiv); messageCanvas.scrollTop = messageCanvas.scrollHeight;
+}
+console.log("Current Permission Status:", Notification.permission);
 
-    messageCanvas.appendChild(containerDiv);
-    messageCanvas.scrollTop = messageCanvas.scrollHeight;
+if (Notification.permission === "granted") {
+    new Notification("Debug Test", { body: "If you see this, Chrome is working fine!" });
+} else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(permission => {
+        console.log("New Permission Status:", permission);
+        if (permission === "granted") {
+            new Notification("Debug Test", { body: "Permission granted just now!" });
+        }
+    });
+} else {
+    console.error("Notifications are blocked by Chrome site settings or the file:// protocol constraint.");
 }
 
 </script>
